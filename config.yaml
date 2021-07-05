@@ -12,8 +12,8 @@ middlewares:
 
 auth:
   passport-google-oauth-ui:
-    client-id: GITHUB_CLIENT_ID # required
-    client-secret: GITHUB_CLIENT_SECRET # required
+    client-id: GOOGLE_CLIENT_ID # required
+    client-secret: GOOGLE_CLIENT_SECRET # required
     enabled: true
   htpasswd:
     file: ./htpasswd
