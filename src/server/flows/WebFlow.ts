@@ -1,25 +1,34 @@
 import { IPluginMiddleware } from "@verdaccio/types"
-import { Application, Handler, Request } from "express"
-import { getPublicUrl } from "verdaccio/build/lib/utils"
+import { Application, Handler, Request, Response } from "express"
+import passport from "passport";
+import { OAuth2Strategy, IOAuth2StrategyOptionWithRequest } from "passport-google-oauth";
 
 import { logger } from "../../logger"
 import { getAuthorizePath, getCallbackPath } from "../../redirect"
-import { buildAccessDeniedPage, buildErrorPage } from "../../statusPage"
+import { buildErrorPage } from "../../statusPage"
 import { AuthCore } from "../plugin/AuthCore"
-import { AuthProvider } from "../plugin/AuthProvider"
-import { Config } from "../plugin/Config"
+import { Config, getConfig } from "../plugin/Config"
 
-export class WebFlow implements IPluginMiddleware<any> {
+export class WebFlow {
   constructor(
     private readonly config: Config,
     private readonly core: AuthCore,
-    private readonly provider: AuthProvider,
   ) {}
 
-  /**
-   * IPluginMiddleware
-   */
-  register_middlewares(app: Application) {
+  initialize(app: Application) {
+    //app.use(passport.initialize());
+    const conf = {
+      clientID: getConfig(this.config, "client-id"),
+      clientSecret: getConfig(this.config, "client-secret"),
+      callbackURL: "http://localhost:4873/-/oauth/callback",
+      passReqToCallback: true
+    } as IOAuth2StrategyOptionWithRequest;
+    passport.use(new OAuth2Strategy(conf, (req: any, accessToken: any, refreshToken: any, profile: any, done:any) => {
+      //console.log(accessToken);
+      //console.log(profile);
+      // GCP側で権限処理は済んでいるので、ここでは全て許可
+      return done(null, profile._json);
+    }))
     app.get(getAuthorizePath(), this.authorize)
     app.get(getCallbackPath(), this.callback)
   }
@@ -27,11 +36,12 @@ export class WebFlow implements IPluginMiddleware<any> {
   /**
    * Initiates the auth flow by redirecting to the provider's login URL.
    */
-  authorize: Handler = async (req, res, next) => {
+  authorize: Handler = async (req: Request, res: Response, next: any) => {
     try {
-      const redirectUrl = this.getRedirectUrl(req)
-      const url = this.provider.getLoginUrl(redirectUrl)
-      res.redirect(url)
+      passport.authenticate("google", {
+        session: false,
+        scope: ["email"]
+      })(req, res, next);
     } catch (error) {
       logger.error(error)
       next(error)
@@ -52,36 +62,28 @@ export class WebFlow implements IPluginMiddleware<any> {
    * There is no need to later decode and decrypt the token. This process is
    * automatically reversed by verdaccio before passing it to the plugin.
    */
-  callback: Handler = async (req, res) => {
+  callback: Handler = async (req: Request, res: Response, next: any) => {
     const withBackButton = true
 
     try {
-      const code = this.provider.getCode(req)
-      const token = await this.provider.getToken(code)
-      const [username, groups] = await Promise.all([
-        this.provider.getUsername(token),
-        this.provider.getGroups(token),
-      ])
-
-      if (this.core.authenticate(username, groups)) {
-        const ui = await this.core.createUiCallbackUrl(username, token, groups)
-
-        res.redirect(ui)
-      } else {
-        res.status(401).send(buildAccessDeniedPage(withBackButton))
-      }
+      await passport.authenticate("google", {
+        session: false,
+        failureRedirect: "/error",
+        failWithError: true
+      }, async (err, user, info) => {
+        if (err) {
+          // res.status(401).send(buildAccessDeniedPage(withBackButton)):
+          return next(err);
+        }
+        if (!user) { res.redirect("/"); }
+        console.log(user);
+        console.log(info);
+        const ui = await this.core.createUiCallbackUrl(user.email, "abcdefg", []);
+        return res.redirect(ui);
+      })(req, res, next);
     } catch (error) {
       logger.error(error)
-
       res.status(500).send(buildErrorPage(error, withBackButton))
     }
-  }
-
-  private getRedirectUrl(req: Request): string {
-    const baseUrl = getPublicUrl(this.config.url_prefix, req).replace(/\/$/, "")
-    const path = getCallbackPath(req.params.id)
-    const redirectUrl = baseUrl + path
-
-    return redirectUrl
   }
 }

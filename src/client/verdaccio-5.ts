@@ -3,7 +3,7 @@ import { getUsageInfo, init, isLoggedIn } from "./plugin"
 const helpCardUsageInfoSelector = "#help-card .MuiCardContent-root span"
 const dialogUsageInfoSelector =
   "#registryInfo--dialog-container .MuiDialogContent-root .MuiTypography-root span"
-const randomClass = "Os1waV6BSoZQKfFwNlIwS"
+const randomClass = "Os1waVB6SoZQKfFwNlIwS"
 
 // copied from here as it needs to be the same behaviour
 // https://github.com/verdaccio/ui/blob/master/src/utils/cli-utils.ts

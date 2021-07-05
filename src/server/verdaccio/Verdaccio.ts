@@ -1,8 +1,11 @@
-import { Config as VerdaccioConfig, JWTSignOptions } from "@verdaccio/types"
+import { Config, JWTSignOptions, RemoteUser , IBasicAuth} from "@verdaccio/types"
 import { merge } from "lodash"
 
 import { getMajorVersion } from "../plugin/Config"
-import { Auth, User } from "../verdaccio"
+
+interface IAuth {
+  jwtEncrypt(user: RemoteUser, signOptions: JWTSignOptions): Promise<string>
+}
 
 // Most of this is duplicated Verdaccio code because it is unfortunately not availabel via API.
 // https://github.com/verdaccio/verdaccio/blob/master/src/lib/auth-utils.ts#L129
@@ -21,7 +24,7 @@ const defaultSecurity = {
   },
 } as const
 
-function getSecurity(config: VerdaccioConfig) {
+function getSecurity(config: Config) {
   return merge({}, defaultSecurity, config.security)
 }
 
@@ -32,15 +35,15 @@ export class Verdaccio {
   readonly majorVersion = getMajorVersion(this.config)
   readonly security = getSecurity(this.config)
 
-  private auth!: Auth
+  private auth!: IBasicAuth<any>
 
-  constructor(private readonly config: VerdaccioConfig) {}
+  constructor(private readonly config: Config) {}
 
-  setAuth(auth: Auth) {
+  setAuth(auth: IBasicAuth<any>) {
     this.auth = auth
   }
 
-  async issueNpmToken(token: string, user: User) {
+  async issueNpmToken(token: string, user: RemoteUser) {
     const jwtSignOptions = this.config.security?.api?.jwt?.sign
 
     if (jwtSignOptions) {
@@ -50,7 +53,7 @@ export class Verdaccio {
     }
   }
 
-  async issueUiToken(user: User) {
+  async issueUiToken(user: RemoteUser): Promise<string> {
     const jwtSignOptions = this.security.web.sign
 
     return this.issueVerdaccio4PlusJWT(user, jwtSignOptions)
@@ -58,10 +61,10 @@ export class Verdaccio {
 
   // https://github.com/verdaccio/verdaccio/blob/master/src/api/web/endpoint/user.ts#L31
   private async issueVerdaccio4PlusJWT(
-    user: User,
+    user: RemoteUser,
     jwtSignOptions: JWTSignOptions,
-  ) {
-    return this.auth.jwtEncrypt(user, jwtSignOptions)
+  ): Promise<string> {
+    return ((this.auth) as unknown as IAuth).jwtEncrypt(user, jwtSignOptions);
   }
 
   private encrypt(text: string) {

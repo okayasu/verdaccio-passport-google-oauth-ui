@@ -7,15 +7,14 @@ storage: ./storage
 plugins: ./plugins
 
 middlewares:
-  github-oauth-ui:
+  passport-google-oauth-ui:
     enabled: true
 
 auth:
-  github-oauth-ui:
-    org: GITHUB_ORG # required, people within this org will be able to authenticate
+  passport-google-oauth-ui:
     client-id: GITHUB_CLIENT_ID # required
     client-secret: GITHUB_CLIENT_SECRET # required
-    # enterprise-origin: GITHUB_ENTERPRISE_ORIGIN # optional, set this if you are using github enterprise
+    enabled: true
   htpasswd:
     file: ./htpasswd
 

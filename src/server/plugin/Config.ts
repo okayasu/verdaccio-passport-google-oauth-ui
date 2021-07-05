@@ -1,6 +1,6 @@
-import { Config as VerdaccioConfig } from "@verdaccio/types"
 import chalk from "chalk"
 import { get } from "lodash"
+import { Config as VerdaccioConfig } from "@verdaccio/types"
 
 import { pluginName } from "../../constants"
 import { logger } from "../../logger"
@@ -10,10 +10,8 @@ import { logger } from "../../logger"
 //
 
 export interface PluginConfig {
-  org: string
   "client-id": string
   "client-secret": string
-  "enterprise-origin"?: string
 }
 
 export type PluginConfigKey = keyof PluginConfig
@@ -79,7 +77,6 @@ export function validateConfig(config: Config) {
   ensureNodeIsNotEmpty(config, "auth")
   ensureNodeIsNotEmpty(config, "middlewares")
 
-  ensurePropExists(config, "org")
   ensurePropExists(config, "client-id")
   ensurePropExists(config, "client-secret")
 }
