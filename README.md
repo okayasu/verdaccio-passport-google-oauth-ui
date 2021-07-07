@@ -43,6 +43,7 @@ middlewares:
   passport-google-oauth-ui:
     client-id: GOOGLE_CLIENT_ID
     client-secret: GOOGLE_CLIENT_SECRET
+    redirect-uri: http://localhost:4873/-/oauth/callback
     enabled: true
 
 auth:
@@ -60,6 +61,10 @@ Notes:
 #### `client-id` and `client-secret`
 
 These values can be obtained from Google Credentials list. https://console.developers.google.com/
+
+#### `redirect-uri`
+
+Redirect URI from Google's OAuth server.
 
 ## Login
 

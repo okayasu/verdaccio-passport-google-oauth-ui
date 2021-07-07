@@ -20,7 +20,7 @@ export class WebFlow {
     const conf = {
       clientID: getConfig(this.config, "client-id"),
       clientSecret: getConfig(this.config, "client-secret"),
-      callbackURL: "http://localhost:4873/-/oauth/callback",
+      callbackURL: getConfig(this.config, "redirect-uri"),
       passReqToCallback: true
     } as IOAuth2StrategyOptionWithRequest;
     passport.use(new OAuth2Strategy(conf, (req: any, accessToken: any, refreshToken: any, profile: any, done:any) => {

@@ -12,6 +12,7 @@ import { logger } from "../../logger"
 export interface PluginConfig {
   "client-id": string
   "client-secret": string
+  "redirect-uri": string
 }
 
 export type PluginConfigKey = keyof PluginConfig
@@ -79,4 +80,5 @@ export function validateConfig(config: Config) {
 
   ensurePropExists(config, "client-id")
   ensurePropExists(config, "client-secret")
+  ensurePropExists(config, "redirect-uri")
 }
