@@ -1,4 +1,3 @@
-import { IPluginMiddleware } from "@verdaccio/types"
 import { Application, Handler, Request, Response } from "express"
 import passport from "passport";
 import { OAuth2Strategy, IOAuth2StrategyOptionWithRequest } from "passport-google-oauth";
@@ -76,7 +75,10 @@ export class WebFlow {
           return next(err)
         }
         if (!user) { res.redirect("/") }
-        const ui = await this.core.createUiCallbackUrl(user.email, user.sub, [])
+        // TODO: change token to some randome fixed string.
+        // like LocalStorage.secret key
+        const token = "abcdefg"
+        const ui = await this.core.createUiCallbackUrl(user.email, token, [])
         return res.redirect(ui)
       })(req, res, next)
     } catch (error) {

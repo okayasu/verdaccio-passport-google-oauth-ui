@@ -1,4 +1,4 @@
-import { AuthCallback, IPluginAuth, IPluginMiddleware, IBasicAuth, AuthError} from "@verdaccio/types"
+import { AuthCallback, IPluginAuth, IPluginMiddleware, IBasicAuth, AuthError, IStorageManager} from "@verdaccio/types"
 import { Application, static as expressServeStatic} from "express"
 
 import { WebFlow } from "../flows/WebFlow"
@@ -24,7 +24,7 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
   /**
    * IPluginMiddleware
    */
-  register_middlewares(app: Application, auth: IBasicAuth<any>) {
+  register_middlewares(app: Application, auth: IBasicAuth<any>, storage: IStorageManager<any>) {
     this.verdaccio.setAuth(auth)
 
     // use static files.
