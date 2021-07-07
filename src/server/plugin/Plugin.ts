@@ -31,17 +31,17 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     app.use(staticPath, expressServeStatic(publicRoot))
 
     // overwrite default html response.
-    app.use(new PatchHtml(this.verdaccio).patchResponse);
+    app.use(new PatchHtml(this.verdaccio).patchResponse)
 
     // add route method.
-    new WebFlow(this.config, this.core).initialize(app);
+    new WebFlow(this.config, this.core).initialize(app)
   }
 
   /**
    * IPluginAuth
    */
   authenticate(username: string, token: string, callback: AuthCallback) {
-    callback(new Error("Signup/Login Not Implemented") as AuthError, false);
+    callback(new Error("Signup/Login Not Implemented") as AuthError, false)
   }
 
 }

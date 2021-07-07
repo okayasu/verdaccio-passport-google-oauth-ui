@@ -64,7 +64,7 @@ export class Verdaccio {
     user: RemoteUser,
     jwtSignOptions: JWTSignOptions,
   ): Promise<string> {
-    return ((this.auth) as unknown as IAuth).jwtEncrypt(user, jwtSignOptions);
+    return ((this.auth) as unknown as IAuth).jwtEncrypt(user, jwtSignOptions)
   }
 
   private encrypt(text: string) {

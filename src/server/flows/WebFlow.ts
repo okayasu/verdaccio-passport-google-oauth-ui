@@ -22,12 +22,12 @@ export class WebFlow {
       clientSecret: getConfig(this.config, "client-secret"),
       callbackURL: getConfig(this.config, "redirect-uri"),
       passReqToCallback: true
-    } as IOAuth2StrategyOptionWithRequest;
+    } as IOAuth2StrategyOptionWithRequest
     passport.use(new OAuth2Strategy(conf, (req: any, accessToken: any, refreshToken: any, profile: any, done:any) => {
       //console.log(accessToken);
       //console.log(profile);
       // GCP側で権限処理は済んでいるので、ここでは全て許可
-      return done(null, profile._json);
+      return done(null, profile._json)
     }))
     app.get(getAuthorizePath(), this.authorize)
     app.get(getCallbackPath(), this.callback)
@@ -41,7 +41,7 @@ export class WebFlow {
       passport.authenticate("google", {
         session: false,
         scope: ["email"]
-      })(req, res, next);
+      })(req, res, next)
     } catch (error) {
       logger.error(error)
       next(error)
@@ -73,14 +73,12 @@ export class WebFlow {
       }, async (err, user, info) => {
         if (err) {
           // res.status(401).send(buildAccessDeniedPage(withBackButton)):
-          return next(err);
+          return next(err)
         }
-        if (!user) { res.redirect("/"); }
-        console.log(user);
-        console.log(info);
-        const ui = await this.core.createUiCallbackUrl(user.email, "abcdefg", []);
-        return res.redirect(ui);
-      })(req, res, next);
+        if (!user) { res.redirect("/") }
+        const ui = await this.core.createUiCallbackUrl(user.email, user.sub, [])
+        return res.redirect(ui)
+      })(req, res, next)
     } catch (error) {
       logger.error(error)
       res.status(500).send(buildErrorPage(error, withBackButton))

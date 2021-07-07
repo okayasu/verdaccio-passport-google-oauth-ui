@@ -16,8 +16,5 @@ export function getUsageInfo() {
       )
     : `//${location.host}${location.pathname}`
   const authToken = localStorage.getItem("npm")
-  return [
-    `npm config set ${configBase}:_authToken "${authToken}"`,
-    `npm config set ${configBase}:always-auth true`,
-  ].join("\n")
+  return `npm config set ${configBase}:_authToken "${authToken}"`
 }
