@@ -1,5 +1,5 @@
 import { Config, JWTSignOptions, RemoteUser , IBasicAuth} from "@verdaccio/types"
-import { merge } from "lodash"
+import merge from "lodash/merge"
 
 import { getMajorVersion } from "../plugin/Config"
 
