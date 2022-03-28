@@ -1,7 +1,6 @@
-import { Config, JWTSignOptions, RemoteUser , IBasicAuth} from "@verdaccio/types"
+import { JWTSignOptions, RemoteUser, IBasicAuth } from "@verdaccio/types"
 import merge from "lodash/merge"
-
-import { getMajorVersion } from "../plugin/Config"
+import { getMajorVersion, VerdaccioConfig } from "../plugin/Config"
 
 interface IAuth {
   jwtEncrypt(user: RemoteUser, signOptions: JWTSignOptions): Promise<string>
@@ -24,7 +23,7 @@ const defaultSecurity = {
   },
 } as const
 
-function getSecurity(config: Config) {
+function getSecurity(config: VerdaccioConfig) {
   return merge({}, defaultSecurity, config.security)
 }
 
@@ -32,19 +31,20 @@ function getSecurity(config: Config) {
  * Abstract Verdaccio version differences and usage of all Verdaccio objects.
  */
 export class Verdaccio {
-  readonly majorVersion = getMajorVersion(this.config)
+  readonly majorVersion = getMajorVersion()
   readonly security = getSecurity(this.config)
 
   private auth!: IBasicAuth<any>
 
-  constructor(private readonly config: Config) {}
+  constructor(private readonly config: VerdaccioConfig) {}
 
-  setAuth(auth: IBasicAuth<any>) {
+  setAuth(auth: IBasicAuth<any>): Verdaccio {
     this.auth = auth
+    return this
   }
 
   async issueNpmToken(token: string, user: RemoteUser) {
-    const jwtSignOptions = this.config.security?.api?.jwt?.sign
+    const jwtSignOptions = this.security?.api?.jwt?.sign
 
     if (jwtSignOptions) {
       return this.issueVerdaccio4PlusJWT(user, jwtSignOptions)

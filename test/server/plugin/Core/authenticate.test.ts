@@ -1,33 +1,71 @@
-import { createTestAuthCore, testOrg, testUsername } from "test/utils"
-
+import { pluginName } from "src/constants"
 import { AuthCore } from "src/server/plugin/AuthCore"
+import { Config } from "src/server/plugin/Config"
+import {
+  createTestAuthCore,
+  createTestPluginConfig,
+  testLoginOrgGroup,
+  testLoginOrgName,
+  testUsername,
+  unrelatedOrgGroup,
+} from "test/utils"
 
 describe("AuthCore", () => {
   describe("authenticate", () => {
     let core: AuthCore
 
-    beforeEach(() => {
-      core = createTestAuthCore()
-    })
+    const configWithMandatoryLoginOrg: Partial<Config> = {
+      auth: {
+        [pluginName]: createTestPluginConfig({ org: testLoginOrgName }),
+      },
+    }
 
-    function expectTrue(groups: string[]) {
+    const configWithoutMandatoryLoginOrg: Partial<Config> = {
+      auth: {
+        [pluginName]: createTestPluginConfig({ org: false }),
+      },
+    }
+
+    function expectAccessGranted(groups: string[]) {
       const result = core.authenticate(testUsername, groups)
       return expect(result).toBe(true)
     }
 
-    function expectFalse(groups: string[]) {
+    function expectAccessDenied(groups: string[]) {
       const result = core.authenticate(testUsername, groups)
       return expect(result).toBe(false)
     }
 
-    it("true", () => {
-      expectTrue([testOrg])
-      expectTrue(["A", testOrg])
+    describe("with mandatory login org", () => {
+      beforeEach(() => {
+        core = createTestAuthCore(configWithMandatoryLoginOrg)
+      })
+
+      it("should grant login access", () => {
+        expectAccessGranted([testLoginOrgGroup])
+        expectAccessGranted([unrelatedOrgGroup, testLoginOrgGroup])
+      })
+
+      it("should deny login access", () => {
+        expectAccessDenied([])
+        expectAccessDenied([unrelatedOrgGroup])
+      })
     })
 
-    it("false", () => {
-      expectFalse([])
-      expectFalse(["A"])
+    describe("without mandatory login org", () => {
+      beforeEach(() => {
+        core = createTestAuthCore(configWithoutMandatoryLoginOrg)
+      })
+
+      it("should grant login access", () => {
+        expectAccessGranted([testLoginOrgGroup])
+        expectAccessGranted([unrelatedOrgGroup, testLoginOrgGroup])
+        expectAccessGranted([unrelatedOrgGroup])
+      })
+
+      it("should deny login access", () => {
+        expectAccessDenied([])
+      })
     })
   })
 })

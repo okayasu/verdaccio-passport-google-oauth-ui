@@ -1,3 +1,5 @@
+import { GitHubAuthProvider } from "src/server/github/AuthProvider"
+import { Plugin } from "src/server/plugin/Plugin"
 import {
   createTestAuthProvider,
   createTestPlugin,
@@ -5,13 +7,10 @@ import {
   testUsername,
 } from "test/utils"
 
-import { GitHubAuthProvider } from "src/server/github/AuthProvider"
-import { Plugin } from "src/server/plugin/Plugin"
-
 jest.mock("src/server/github/AuthProvider")
 
-const AuthProvider: GitHubAuthProvider &
-  jest.MockInstance<any, any> = GitHubAuthProvider as any
+const AuthProvider: GitHubAuthProvider & jest.MockInstance<any, any> =
+  GitHubAuthProvider as any
 
 describe("Plugin", () => {
   describe("authenticate", () => {
@@ -22,10 +21,26 @@ describe("Plugin", () => {
       plugin = createTestPlugin()
     })
 
-    it("user with invalid token cannot authenticate", (done) => {
-      plugin.authenticate(testUsername, "invalid token", (err, groups) => {
+    it("user with empty username cannot authenticate", (done) => {
+      plugin.authenticate("", testOAuthToken, (err, groups) => {
         expect(err).toBeNull()
-        expect(groups).toEqual(false)
+        expect(groups).toBe(false)
+        done()
+      })
+    })
+
+    it("user with empty token cannot authenticate", (done) => {
+      plugin.authenticate(testUsername, "", (err, groups) => {
+        expect(err).toBeNull()
+        expect(groups).toBe(false)
+        done()
+      })
+    })
+
+    it("user with invalid token throws error", (done) => {
+      plugin.authenticate(testUsername, "invalid_token", (err, groups) => {
+        expect(err).toBeTruthy()
+        expect(groups).toBeFalsy()
         done()
       })
     })
@@ -33,15 +48,7 @@ describe("Plugin", () => {
     it("user with valid token can authenticate", (done) => {
       plugin.authenticate(testUsername, testOAuthToken, (err, groups) => {
         expect(err).toBeNull()
-        expect(groups).toMatchInlineSnapshot(`
-          Array [
-            "test-username",
-            "github/TEST_ORG",
-            "unrelated_org",
-            "github/TEST_ORG/TEST_TEAM",
-            "github/TEST_ORG/unrelated_team",
-          ]
-        `)
+        expect(groups).toBeTruthy()
         done()
       })
     })

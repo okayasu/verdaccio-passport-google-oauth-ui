@@ -32,9 +32,11 @@ packages:
   "@*/*":
     access: $authenticated
     publish: $authenticated
+    unpublish: $authenticated
     proxy: npmjs
 
   "**":
     access: $authenticated
     publish: $authenticated
+    unpublish: $authenticated
     proxy: npmjs

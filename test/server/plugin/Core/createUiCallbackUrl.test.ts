@@ -1,13 +1,10 @@
+import { AuthCore } from "src/server/plugin/AuthCore"
 import {
   createTestAuthCore,
-  testGroups,
   testOAuthToken,
-  testOrg,
-  testTeam,
+  testProviderGroups,
   testUsername,
 } from "test/utils"
-
-import { AuthCore } from "src/server/plugin/AuthCore"
 
 describe("AuthCore", () => {
   describe("createUiCallbackUrl", () => {
@@ -21,7 +18,7 @@ describe("AuthCore", () => {
       const url = await core.createUiCallbackUrl(
         testUsername,
         testOAuthToken,
-        testGroups,
+        testProviderGroups,
       )
 
       expect(url).toMatchInlineSnapshot(

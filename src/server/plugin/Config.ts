@@ -1,13 +1,26 @@
+import {
+  Config as IncorrectVerdaccioConfig,
+  PackageAccess as IncorrectVerdaccioPackageAccess,
+} from "@verdaccio/types"
 import chalk from "chalk"
-import { get } from "lodash"
-import { Config as VerdaccioConfig } from "@verdaccio/types"
-
-import { pluginName } from "../../constants"
+import get from "lodash/get"
+import ow from "ow"
+import { pluginName, publicGitHubOrigin } from "../../constants"
 import { logger } from "../../logger"
 
 //
 // Types
 //
+
+// Verdaccio incorrectly types some of these as string arrays
+// although they are all strings.
+export interface PackageAccess extends IncorrectVerdaccioPackageAccess {
+  unpublish?: string[]
+}
+
+export type VerdaccioConfig = Omit<IncorrectVerdaccioConfig, "packages"> & {
+  packages?: Record<string, PackageAccess>
+}
 
 export interface PluginConfig {
   "client-id": string
@@ -17,7 +30,7 @@ export interface PluginConfig {
 
 export type PluginConfigKey = keyof PluginConfig
 
-export interface Config extends VerdaccioConfig, PluginConfig {
+export interface Config extends VerdaccioConfig {
   middlewares: { [pluginName]: PluginConfig }
   auth: { [pluginName]: PluginConfig }
 }
@@ -28,38 +41,40 @@ export interface Config extends VerdaccioConfig, PluginConfig {
 
 export function getConfig(config: Config, key: PluginConfigKey): string {
   const value =
-    null ||
-    get(config, `middlewares[${pluginName}][${key}]`) ||
+    get(config, `middlewares[${pluginName}][${key}]`) ??
     get(config, `auth[${pluginName}][${key}]`)
 
   return process.env[value] || value
 }
 
 /**
- * user_agent: e.g. "verdaccio/5.0.4" --> 5
+ * e.g. "5.0.4" --> 5
  */
-export function getMajorVersion(config: VerdaccioConfig): number {
-  return 5
+export function getMajorVersion() {
+  const version = require("verdaccio/package.json").version
+  return +version.replace(/^(\d+).\d+.\d+$/, "$1")
 }
 
 //
 // Validation
 //
 
-function ensurePropExists(config: Config, key: PluginConfigKey) {
+function validateProp(config: Config, key: PluginConfigKey, predicate: any) {
   const value = getConfig(config, key)
 
-  if (!value) {
+  try {
+    ow(value, predicate)
+  } catch (error) {
     logger.error(
       chalk.red(
-        `[${pluginName}] ERR: Missing configuration "auth.${pluginName}.${key}"`,
+        `[${pluginName}] ERR: Invalid configuration at "auth.${pluginName}.${key}": ${error.message}`,
       ),
     )
     throw new Error("Please check your verdaccio config.")
   }
 }
 
-function ensureNodeIsNotEmpty(config: Config, node: keyof Config) {
+function ensureObjectNotEmpty(config: Config, node: keyof Config) {
   const path = `[${node}][${pluginName}]`
   const obj = get(config, path, {})
 
@@ -69,16 +84,16 @@ function ensureNodeIsNotEmpty(config: Config, node: keyof Config) {
 }
 
 export function validateConfig(config: Config) {
-  const majorVersion = getMajorVersion(config)
+  const majorVersion = getMajorVersion()
 
   if (majorVersion < 5) {
     throw new Error("This plugin requires verdaccio 5 or above")
   }
 
-  ensureNodeIsNotEmpty(config, "auth")
-  ensureNodeIsNotEmpty(config, "middlewares")
+  ensureObjectNotEmpty(config, "auth")
+  ensureObjectNotEmpty(config, "middlewares")
 
-  ensurePropExists(config, "client-id")
-  ensurePropExists(config, "client-secret")
-  ensurePropExists(config, "redirect-uri")
+  validateProp(config, "client-id", ow.string.nonEmpty)
+  validateProp(config, "client-secret", ow.string.nonEmpty)
+  validateProp(config, "redirect-uri", ow.string.nonEmpty)
 }
