@@ -23,7 +23,7 @@
     "author": "Masanori Okayasu",
     "main": "dist/server/index.js",
     "bin": {
-        "verdaccio-github-oauth-ui": "dist/cli/index.js"
+        "verdaccio-google-oauth-ui": "dist/cli/index.js"
     },
     "files": [
         "dist"

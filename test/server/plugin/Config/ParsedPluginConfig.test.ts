@@ -79,14 +79,14 @@ describe("Config", () => {
           "clientSecret": "clientSecret",
           "config": {
             "auth": {
-              "github-oauth-ui": {
+              "google-oauth-ui": {
                 "client-id": "clientId",
                 "client-secret": "clientSecret",
                 "org": false,
               },
             },
             "middlewares": {
-              "github-oauth-ui": {
+              "google-oauth-ui": {
                 "enabled": true,
               },
             },
