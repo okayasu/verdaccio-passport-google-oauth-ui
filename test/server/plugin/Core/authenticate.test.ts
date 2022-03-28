@@ -1,4 +1,4 @@
-import { pluginName } from "src/constants"
+import { pluginKey } from "src/constants"
 import { AuthCore } from "src/server/plugin/AuthCore"
 import { Config } from "src/server/plugin/Config"
 import {
@@ -9,6 +9,7 @@ import {
   testUsername,
   unrelatedOrgGroup,
 } from "test/utils"
+import { beforeEach, describe, expect, it } from "vitest"
 
 describe("AuthCore", () => {
   describe("authenticate", () => {
@@ -16,13 +17,13 @@ describe("AuthCore", () => {
 
     const configWithMandatoryLoginOrg: Partial<Config> = {
       auth: {
-        [pluginName]: createTestPluginConfig({ org: testLoginOrgName }),
+        [pluginKey]: createTestPluginConfig({ org: testLoginOrgName }),
       },
     }
 
     const configWithoutMandatoryLoginOrg: Partial<Config> = {
       auth: {
-        [pluginName]: createTestPluginConfig({ org: false }),
+        [pluginKey]: createTestPluginConfig({ org: false }),
       },
     }
 

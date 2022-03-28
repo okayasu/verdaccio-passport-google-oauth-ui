@@ -1,4 +1,4 @@
-import { Verdaccio } from "src/server/verdaccio"
+import { Verdaccio } from "src/server/plugin/Verdaccio"
 import {
   createRealVerdaccioAuth,
   createTestConfig,
@@ -6,6 +6,7 @@ import {
   testOAuthToken,
   testUser,
 } from "test/utils"
+import { describe, expect, it } from "vitest"
 
 describe("Verdaccio", () => {
   describe("issueNpmToken", () => {

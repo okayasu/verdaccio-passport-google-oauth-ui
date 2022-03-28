@@ -1,17 +1,16 @@
-import { RemoteUser } from "@verdaccio/types"
 import uniq from "lodash/uniq"
 import { stringify } from "querystring"
 import { authenticatedUserGroups } from "../../constants"
 import { logger } from "../../logger"
-import { Verdaccio } from "../verdaccio"
-import { Config, getConfig } from "./Config"
+import { ParsedPluginConfig } from "./Config"
+import { User, Verdaccio } from "./Verdaccio"
 
 export class AuthCore {
   private readonly configuredGroups = this.getConfiguredGroups()
 
   constructor(
     private readonly verdaccio: Verdaccio,
-    private readonly config: Config,
+    private readonly config: ParsedPluginConfig,
   ) {}
 
   /**
@@ -33,14 +32,14 @@ export class AuthCore {
   async createAuthenticatedUser(
     username: string,
     groups: string[],
-  ): Promise<RemoteUser> {
+  ): Promise<User> {
     const relevantGroups = groups.filter(
       (group) => group in this.configuredGroups,
     )
 
     relevantGroups.push(username)
 
-    const user: RemoteUser = {
+    const user: User = {
       name: username,
       groups: [...authenticatedUserGroups],
       real_groups: uniq(relevantGroups.filter(Boolean).sort()),

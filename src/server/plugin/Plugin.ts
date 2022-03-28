@@ -9,41 +9,40 @@ import {
   RemoteUser,
 } from "@verdaccio/types"
 import { Application, static as expressServeStatic} from "express"
-
 import { WebFlow } from "../flows"
-import { Verdaccio } from "../verdaccio"
 import { AuthCore } from "./AuthCore"
-import { Config, PackageAccess, validateConfig } from "./Config"
+import { Config, PackageAccess, ParsedPluginConfig } from "./Config"
 import { PatchHtml } from "./PatchHtml"
 import { registerGlobalProxyAgent } from "./ProxyAgent"
 import { publicRoot, staticPath } from "../../constants"
+import { Auth, Verdaccio } from "./Verdaccio"
 
 /**
  * Implements the verdaccio plugin interfaces.
  */
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
+  private readonly parsedConfig = new ParsedPluginConfig(this.config)
   private readonly verdaccio = new Verdaccio(this.config)
-  private readonly core = new AuthCore(this.verdaccio, this.config)
+  private readonly core = new AuthCore(this.verdaccio, this.parsedConfig)
 
   constructor(private readonly config: Config) {
-    validateConfig(config)
     registerGlobalProxyAgent()
   }
 
   /**
    * IPluginMiddleware
    */
-  register_middlewares(app: Application, auth: IBasicAuth<any>) {
+  register_middlewares(app: Application, auth: Auth) {
     this.verdaccio.setAuth(auth)
 
     // use static files.
     app.use(staticPath, expressServeStatic(publicRoot))
 
     // overwrite default html response.
-    app.use(new PatchHtml(this.verdaccio).patchResponse)
+    new PatchHtml().register_middlewares(app)
 
     // add route method.
-    new WebFlow(this.config, this.core).initialize(app)
+    new WebFlow(this.parsedConfig, this.core).register_middlewares(app)
   }
 
   /**

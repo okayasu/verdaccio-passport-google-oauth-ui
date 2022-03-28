@@ -1,120 +1,116 @@
-import { pluginName } from "src/constants"
-import { Config, PluginConfig, validateConfig } from "src/server/plugin/Config"
-import { createTestPluginConfig, testUserAgent } from "test/utils"
+import { pluginKey } from "src/constants"
+import { ParsedPluginConfig } from "src/server/plugin/Config"
+import { createTestPluginConfig } from "test/utils"
+import { describe, it, vi } from "vitest"
+
+vi.mock("verdaccio/package.json")
 
 describe("Config", () => {
-  describe("validateConfig", () => {
+  describe("validate config", () => {
+    const enabledPluginConfig = { enabled: true } as any
     const pluginConfig = createTestPluginConfig()
-    const enabledPluginNode = { enabled: true } as any as PluginConfig
 
-    function shouldSucceed(config: Config) {
-      validateConfig(config)
+    function createConfig(config: any) {
+      new ParsedPluginConfig(config)
     }
 
     it("accepts an empty 'auth' node as long as it is enabled", () => {
-      shouldSucceed({
-        auth: { [pluginName]: enabledPluginNode },
-        middlewares: { [pluginName]: pluginConfig },
-        user_agent: testUserAgent,
+      createConfig({
+        auth: { [pluginKey]: enabledPluginConfig },
+        middlewares: { [pluginKey]: pluginConfig },
       })
     })
 
     it("accepts an empty 'middlewares' node as long as it is enabled", () => {
-      shouldSucceed({
-        auth: { [pluginName]: pluginConfig },
-        middlewares: { [pluginName]: enabledPluginNode },
-        user_agent: testUserAgent,
+      createConfig({
+        auth: { [pluginKey]: pluginConfig },
+        middlewares: { [pluginKey]: enabledPluginConfig },
       })
     })
 
     it("treats 'enterprise-origin' as optional", () => {
-      shouldSucceed({
+      createConfig({
         auth: {
-          [pluginName]: { ...pluginConfig, "enterprise-origin": undefined },
+          [pluginKey]: { ...pluginConfig, "enterprise-origin": undefined },
         },
         middlewares: {
-          [pluginName]: enabledPluginNode,
+          [pluginKey]: enabledPluginConfig,
         },
-        user_agent: testUserAgent,
       })
     })
 
-    function shouldFail(config: any) {
-      try {
-        validateConfig(config)
-        fail()
-      } catch (error) {
-        // expected
-      }
-    }
-
-    it("throws an error if the major version is below 5", () => {
-      shouldFail({
-        auth: { [pluginName]: pluginConfig },
-        middlewares: { [pluginName]: enabledPluginNode },
-        user_agent: "verdaccio/4.3.2",
-      })
-    })
-
-    it("throws an error if 'auth' node is not enabled", () => {
-      shouldFail({
-        middlewares: { [pluginName]: pluginConfig },
-        user_agent: testUserAgent,
-      })
-    })
-
-    it("throws an error if 'middlewares' node is not enabled", () => {
-      shouldFail({
-        auth: { [pluginName]: pluginConfig },
-        user_agent: testUserAgent,
-      })
-    })
-
-    it("throws an error if 'client-id' is missing", () => {
-      shouldFail({
+    it("treats 'repository-access' as optional", () => {
+      createConfig({
         auth: {
-          [pluginName]: { ...pluginConfig, ["client-id"]: undefined },
+          [pluginKey]: { ...pluginConfig, "repository-access": undefined },
         },
         middlewares: {
-          [pluginName]: { enabled: true },
+          [pluginKey]: enabledPluginConfig,
         },
-        user_agent: testUserAgent,
       })
     })
 
-    it("throws an error if 'client-secret' is missing", () => {
-      shouldFail({
-        auth: {
-          [pluginName]: { ...pluginConfig, ["client-secret"]: undefined },
-        },
-        middlewares: {
-          [pluginName]: { enabled: true },
-        },
-        user_agent: testUserAgent,
+    it.fails("throws an error if the major version is below 5", () => {
+      require("verdaccio/package.json").version = "4.3.2"
+      createConfig({
+        auth: { [pluginKey]: pluginConfig },
+        middlewares: { [pluginKey]: enabledPluginConfig },
       })
     })
 
-    it("throws an error if 'org' is missing", () => {
-      shouldFail({
-        auth: {
-          [pluginName]: { ...pluginConfig, ["org"]: undefined },
-        },
-        middlewares: {
-          [pluginName]: { enabled: true },
-        },
-        user_agent: testUserAgent,
+    it.fails("throws an error if 'auth' node is not enabled", () => {
+      createConfig({
+        middlewares: { [pluginKey]: pluginConfig },
       })
     })
 
-    it("throws an error if 'org' is true", () => {
-      shouldFail({
+    it.fails("throws an error if 'middlewares' node is not enabled", () => {
+      createConfig({
+        auth: { [pluginKey]: pluginConfig },
+      })
+    })
+
+    it.fails("throws an error if 'client-id' is missing", () => {
+      createConfig({
         auth: {
-          [pluginName]: { ...pluginConfig, ["org"]: true },
+          [pluginKey]: { ...pluginConfig, ["client-id"]: undefined },
         },
         middlewares: {
-          [pluginName]: { enabled: true },
+          [pluginKey]: { enabled: true },
         },
-        user_agent: testUserAgent,
+      })
+    })
+
+    it.fails("throws an error if 'client-secret' is missing", () => {
+      createConfig({
+        auth: {
+          [pluginKey]: { ...pluginConfig, ["client-secret"]: undefined },
+        },
+        middlewares: {
+          [pluginKey]: { enabled: true },
+        },
+      })
+    })
+
+    it.fails("throws an error if 'org' is missing", () => {
+      createConfig({
+        auth: {
+          [pluginKey]: { ...pluginConfig, ["org"]: undefined },
+        },
+        middlewares: {
+          [pluginKey]: { enabled: true },
+        },
+      })
+    })
+
+    it.fails("throws an error if 'org' is true", () => {
+      createConfig({
+        auth: {
+          [pluginKey]: { ...pluginConfig, ["org"]: true },
+        },
+        middlewares: {
+          [pluginKey]: { enabled: true },
+        },
       })
     })
   })

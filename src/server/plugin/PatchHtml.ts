@@ -1,22 +1,20 @@
+import { IPluginMiddleware } from "@verdaccio/types"
 import { Application, Handler } from "express"
-import { readFileSync } from "fs"
-
-import { publicRoot, staticPath } from "../../constants"
-import { Verdaccio } from "../verdaccio"
+import { staticPath } from "../../constants"
 
 /**
  * Injects additional static imports into the DOM with code from the client folder
  * that modifies the login button.
  */
-export class PatchHtml {
-  private readonly scriptTag = `<script src="${staticPath}/verdaccio-${this.verdaccio.majorVersion}.js"></script>`
-  private readonly styleTag = `<style>${readFileSync(
-    `${publicRoot}/verdaccio-${this.verdaccio.majorVersion}.css`,
-  )}</style>`
-  private readonly headWithStyle = [this.styleTag, "</head>"].join("")
-  private readonly bodyWithScript = [this.scriptTag, "</body>"].join("")
+export class PatchHtml implements IPluginMiddleware<any> {
+  private readonly scriptTag = `<script src="${staticPath}/verdaccio-5.js"></script>`
 
-  constructor(private readonly verdaccio: Verdaccio) {}
+  /**
+   * IPluginMiddleware
+   */
+  register_middlewares(app: Application) {
+    app.use(this.patchResponse)
+  }
 
   /**
    * Patches `res.send` in order to inject style and script tags.
@@ -35,8 +33,6 @@ export class PatchHtml {
     if (!html.includes("__VERDACCIO_BASENAME_UI_OPTIONS")) {
       return html
     }
-    return html
-      .replace(/<\/head>/, this.headWithStyle)
-      .replace(/<\/body>/, this.bodyWithScript)
+    return html.replace(/<\/body>/, [this.scriptTag, "</body>"].join(""))
   }
 }

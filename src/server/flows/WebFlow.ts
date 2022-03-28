@@ -1,25 +1,27 @@
+import { IPluginMiddleware } from "@verdaccio/types"
 import { Application, Handler, Request, Response } from "express"
-import passport from "passport";
 import { OAuth2Strategy, IOAuth2StrategyOptionWithRequest } from "passport-google-oauth";
+import passport from "passport"
+import { getPublicUrl } from "verdaccio/build/lib/utils"
 
 import { logger } from "../../logger"
 import { getAuthorizePath, getCallbackPath } from "../../redirect"
 import { buildErrorPage } from "../../statusPage"
 import { AuthCore } from "../plugin/AuthCore"
-import { Config, getConfig } from "../plugin/Config"
+import { ParsedPluginConfig } from "../plugin/Config"
 
-export class WebFlow {
+export class WebFlow implements IPluginMiddleware<any> {
   constructor(
-    private readonly config: Config,
+    private readonly config: ParsedPluginConfig,
     private readonly core: AuthCore,
   ) {}
 
   initialize(app: Application) {
     //app.use(passport.initialize());
     const conf = {
-      clientID: getConfig(this.config, "client-id"),
-      clientSecret: getConfig(this.config, "client-secret"),
-      callbackURL: getConfig(this.config, "redirect-uri"),
+      clientID: this.config.clientId,
+      clientSecret: this.config.clientSecret,
+      callbackURL: this.config.redirectUri,
       passReqToCallback: true
     } as IOAuth2StrategyOptionWithRequest
     passport.use(new OAuth2Strategy(conf, (req: any, accessToken: any, refreshToken: any, profile: any, done:any) => {
@@ -28,6 +30,13 @@ export class WebFlow {
       // GCP側で権限処理は済んでいるので、ここでは全て許可
       return done(null, profile._json)
     }))
+  }
+
+  /**
+   * IPluginMiddleware
+   */
+  register_middlewares(app: Application) {
+    this.initialize(app)
     app.get(getAuthorizePath(), this.authorize)
     app.get(getCallbackPath(), this.callback)
   }
@@ -83,7 +92,16 @@ export class WebFlow {
       })(req, res, next)
     } catch (error) {
       logger.error(error)
+
       res.status(500).send(buildErrorPage(error, withBackButton))
     }
+  }
+
+  private getRedirectUrl(req: Request): string {
+    const baseUrl = getPublicUrl(this.config.url_prefix, req).replace(/\/$/, "")
+    const path = getCallbackPath(req.params.id)
+    const redirectUrl = baseUrl + path
+
+    return redirectUrl
   }
 }

@@ -1,13 +1,19 @@
 import { AllowAccess, RemoteUser } from "@verdaccio/types"
 import { Request } from "express"
-import { authenticatedUserGroups, pluginName } from "src/constants"
+import { authenticatedUserGroups, pluginKey } from "src/constants"
 import { AuthCore } from "src/server/plugin/AuthCore"
 import { AuthProvider } from "src/server/plugin/AuthProvider"
-import { Config, PackageAccess, PluginConfig } from "src/server/plugin/Config"
+import {
+  Config,
+  PackageAccess,
+  ParsedPluginConfig,
+  PluginConfig,
+} from "src/server/plugin/Config"
 import { Plugin } from "src/server/plugin/Plugin"
-import { Verdaccio } from "src/server/verdaccio/Verdaccio"
+import { Verdaccio } from "src/server/plugin/Verdaccio"
 import timekeeper from "timekeeper"
 import Auth from "verdaccio/build/lib/auth"
+import { afterEach, beforeEach, vi } from "vitest"
 
 export const testLoginOrgName = "TEST_LOGIN_ORG"
 export const testLoginOrgGroup = `github/owner/${testLoginOrgName}`
@@ -59,7 +65,6 @@ export const testMajorVersion = 4
 export const testUiToken = "test-ui-token"
 export const testNpmToken = "test-npm-token"
 export const testErrorMessage = "expected-error"
-export const testUserAgent = "verdaccio/5.0.4"
 
 export const testUser = createTestUser(testProviderGroups)
 
@@ -70,6 +75,7 @@ export function createTestPluginConfig(
     "client-id": testClientId,
     "client-secret": testClientSecret,
     org: false,
+    "repository-access": true,
     ...config,
   }
 }
@@ -77,22 +83,21 @@ export function createTestPluginConfig(
 export function createTestConfig(config: Partial<Config> = {}) {
   return {
     auth: {
-      [pluginName]: createTestPluginConfig(),
+      [pluginKey]: createTestPluginConfig(),
     },
     middlewares: {
-      [pluginName]: {
+      [pluginKey]: {
         enabled: true,
       },
     },
-    user_agent: testUserAgent,
     ...config,
   } as Config
 }
 
 export function createTestVerdaccio(config: Partial<Config> = {}) {
   const verdaccio = new Verdaccio(createTestConfig(config))
-  verdaccio.issueUiToken = jest.fn(() => Promise.resolve(testUiToken))
-  verdaccio.issueNpmToken = jest.fn(() => Promise.resolve(testNpmToken))
+  verdaccio.issueUiToken = vi.fn(() => Promise.resolve(testUiToken))
+  verdaccio.issueNpmToken = vi.fn(() => Promise.resolve(testNpmToken))
   return verdaccio
 }
 
@@ -124,7 +129,10 @@ export function createTestAuthProvider() {
 }
 
 export function createTestAuthCore(config: Partial<Config> = {}) {
-  return new AuthCore(createTestVerdaccio(config), createTestConfig(config))
+  return new AuthCore(
+    createTestVerdaccio(config),
+    new ParsedPluginConfig(createTestConfig(config)),
+  )
 }
 
 export function createTestPlugin(config: Partial<Config> = {}) {
