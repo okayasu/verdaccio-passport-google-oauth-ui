@@ -37,11 +37,21 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     // use static files.
     app.use(staticPath, expressServeStatic(publicRoot))
 
-    // overwrite default html response.
-    new PatchHtml().register_middlewares(app)
+    const children = [
+      new PatchHtml(),
+      new WebFlow(this.parsedConfig, this.core),
+    ]
 
-    // add route method.
-    new WebFlow(this.parsedConfig, this.core).register_middlewares(app)
+    for (const child of children) {
+      child.register_middlewares(app)
+    }
+  }
+
+  private async userNameAndTokenMatch(
+    userName: string,
+    userToken: string,
+  ): Promise<boolean> {
+    return true
   }
 
   /**
