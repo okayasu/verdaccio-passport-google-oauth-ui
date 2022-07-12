@@ -40,6 +40,37 @@ export interface Config extends VerdaccioConfig {
   auth: { [key: string]: PluginConfig }
 }
 
+export interface GroupParts {
+  providerId?: string
+  key1?: string
+  value1?: string
+  key2?: string
+  value2?: string
+  key3?: string
+}
+
+export type ParsedUser = {
+  group: string
+  user: string
+}
+
+export type ParsedOrg = {
+  group: string
+  org: string
+}
+
+export type ParsedTeam = {
+  group: string
+  org: string
+  team: string
+}
+
+export type ParsedRepo = {
+  group: string
+  owner: string
+  repo: string
+}
+
 /**
  * e.g. "5.0.4"
  */
@@ -60,28 +91,18 @@ function validateVersion() {
 }
 
 function validateNodeExists(config: Config, node: keyof Config) {
-  const path = `[${String(node)}][${pluginKey}]`
+  const path = `[${node}][${pluginKey}]`
   const obj = get(config, path, {})
 
   if (!Object.keys(obj).length) {
-    throw new Error(`"${String(node)}.${pluginKey}" must be enabled`)
+    throw new Error(`"${node}.${pluginKey}" must be enabled`)
   }
-}
-
-function getEnvValue(name: any) {
-  const value = process.env[String(name)]
-  if (value === "true" || value === "false") {
-    return value === "true"
-  }
-  return value
 }
 
 function getConfigValue<T>(config: Config, key: string, predicate: any): T {
-  let valueOrEnvName =
-    get(config, ["auth", pluginKey, key]) ??
-    get(config, ["middlewares", pluginKey, key])
+  let valueOrEnvName = get(config, ["auth", pluginKey, key])
 
-  const value = getEnvValue(valueOrEnvName) ?? valueOrEnvName
+  const value = process.env[String(valueOrEnvName)] ?? valueOrEnvName
 
   try {
     assert(value, predicate)
@@ -96,20 +117,19 @@ function getConfigValue<T>(config: Config, key: string, predicate: any): T {
 }
 
 //
-// Access
+// Implementation
 //
 
 export class ParsedPluginConfig {
-  public readonly packages = this.config.packages ?? {}
-  public readonly url_prefix = this.config.url_prefix ?? ""
+  readonly url_prefix = this.config.url_prefix ?? ""
 
-  public readonly clientId = getConfigValue<string>(
+  readonly clientId = getConfigValue<string>(
     this.config,
     "client-id",
     assert.string.nonEmpty,
   )
 
-  public readonly clientSecret = getConfigValue<string>(
+  readonly clientSecret = getConfigValue<string>(
     this.config,
     "client-secret",
     assert.string.nonEmpty,
@@ -121,10 +141,82 @@ export class ParsedPluginConfig {
     assert.string.nonEmpty,
   )
 
-  constructor(public readonly config: Config) {
+  constructor(readonly config: Config) {
     validateVersion()
 
     validateNodeExists(config, "middlewares")
     validateNodeExists(config, "auth")
+
+    this.parseConfiguredPackageGroups()
+  }
+
+  readonly configuredGroupsMap: Record<string, boolean> = {}
+  readonly parsedUsers: ParsedUser[] = []
+  readonly parsedOrgs: ParsedOrg[] = []
+  readonly parsedTeams: ParsedTeam[] = []
+  readonly parsedRepos: ParsedRepo[] = []
+
+  isGroupConfigured(group: string) {
+    return !!this.configuredGroupsMap[group]
+  }
+
+  /**
+   * Returns all permission groups used in the Verdacio config.
+   */
+  private parseConfiguredPackageGroups() {
+    Object.values(this.config.packages || {}).forEach((packageConfig) => {
+      ;["access", "publish", "unpublish"]
+        .flatMap((key) => packageConfig[key])
+        .forEach((group) => {
+          if (typeof group !== "string") {
+            return
+          }
+
+          const [providerId, key1, value1, key2, value2, key3] =
+            group.split("/")
+
+          if (providerId !== "github") {
+            return null
+          }
+
+          if (key1 === "user" && !key2) {
+            const parsedUser: ParsedUser = {
+              group,
+              user: value1,
+            }
+            this.parsedUsers.push(parsedUser)
+            this.configuredGroupsMap[group] = true
+          }
+
+          if (key1 === "org" && key2 === "team" && !key3) {
+            const parsedTeam: ParsedTeam = {
+              group,
+              org: value1,
+              team: value2,
+            }
+            this.parsedTeams.push(parsedTeam)
+            this.configuredGroupsMap[group] = true
+          }
+
+          if ((key1 === "org" || key1 === "user") && key2 === "repo" && !key3) {
+            const parsedRepo: ParsedRepo = {
+              group,
+              owner: value1,
+              repo: value2,
+            }
+            this.parsedRepos.push(parsedRepo)
+            this.configuredGroupsMap[group] = true
+          }
+
+          if (key1 === "org" && !key2) {
+            const parsedOrg: ParsedOrg = {
+              group,
+              org: value1,
+            }
+            this.parsedOrgs.push(parsedOrg)
+            this.configuredGroupsMap[group] = true
+          }
+        })
+    })
   }
 }

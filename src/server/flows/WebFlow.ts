@@ -87,7 +87,7 @@ export class WebFlow implements IPluginMiddleware<any> {
         // TODO: change token to some randome fixed string.
         // like LocalStorage.secret key
         const token = "abcdefg"
-        const ui = await this.core.createUiCallbackUrl(user.email, token, [])
+        const ui = await this.core.createUiCallbackUrl(user.email, [], token)
         return res.redirect(ui)
       })(req, res, next)
     } catch (error) {

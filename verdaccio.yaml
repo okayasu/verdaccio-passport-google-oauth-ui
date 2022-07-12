@@ -6,6 +6,11 @@
 storage: ./storage
 plugins: ./plugins
 
+log:
+  type: stdout
+  format: pretty
+  level: info
+
 middlewares:
   passport-google-oauth-ui:
     enabled: true
@@ -18,6 +23,7 @@ auth:
     enabled: true
   htpasswd:
     file: ./htpasswd
+    algorithm: bcrypt
 
 security:
   api:
