@@ -14,7 +14,7 @@ import { AuthCore } from "./AuthCore"
 import { Config, PackageAccess, ParsedPluginConfig } from "./Config"
 import { PatchHtml } from "./PatchHtml"
 import { registerGlobalProxyAgent } from "./ProxyAgent"
-import { publicRoot, staticPath } from "../../constants"
+import { publicRoot, staticPath } from "../constants"
 import { Auth, Verdaccio } from "./Verdaccio"
 
 /**
