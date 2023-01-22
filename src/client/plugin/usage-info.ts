@@ -6,7 +6,7 @@
 export function getUsageInfo() {
   const username = localStorage.getItem("username")
   if (!username) {
-    return "Click the login button to authenticate with Google."
+    return "Click the login button to authenticate with GitHub."
   }
 
   const configBase = (window as any).VERDACCIO_API_URL
@@ -16,5 +16,7 @@ export function getUsageInfo() {
       )
     : `//${location.host}${location.pathname}`
   const authToken = localStorage.getItem("npm")
-  return `npm config set ${configBase}:_authToken "${authToken}"`
+  return [
+    `npm config set ${configBase}:_authToken "${authToken}"`,
+  ].join("\n")
 }
