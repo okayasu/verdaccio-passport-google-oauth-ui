@@ -1,24 +1,26 @@
 # Configuration
 
-1. [Installing the Plugin](#installing-the-plugin)
-   1. [Installing It Locally](#installing-it-locally)
-   2. [Extending the Verdaccio Docker Image](#extending-the-verdaccio-docker-image)
-   3. [Global Installation](#global-installation)
-2. [Registering a GitHub OAuth Application](#registering-a-github-oauth-application)
-3. [Configuring Verdaccio](#configuring-verdaccio)
-   1. [`client-id` and `client-secret` (required, string)](#client-id-and-client-secret-required-string)
-   2. [`token` (required, string)](#token-required-string)
-   3. [`enterprise-origin` (optional, string)](#enterprise-origin-optional-string)
-   4. [Using Environment Variables](#using-environment-variables)
-4. [Configuring Package Access](#configuring-package-access)
-5. [Configuring a Proxy](#configuring-a-proxy)
-6. [Revoking Tokens](#revoking-tokens)
-   1. [As a Registry User](#as-a-registry-user)
-   2. [As a Registry Owner](#as-a-registry-owner)
+- [Configuration](#configuration)
+    - [Compatibility](#compatibility)
+  - [Installing the Plugin](#installing-the-plugin)
+    - [Installing It Locally](#installing-it-locally)
+    - [Extending the Verdaccio Docker Image](#extending-the-verdaccio-docker-image)
+    - [Global Installation](#global-installation)
+  - [Registering a GitHub OAuth Application](#registering-a-github-oauth-application)
+  - [Configuring Verdaccio](#configuring-verdaccio)
+    - [`client-id` and `client-secret` (required, string)](#client-id-and-client-secret-required-string)
+    - [`token` (required, string)](#token-required-string)
+    - [`enterprise-origin` (optional, string)](#enterprise-origin-optional-string)
+    - [Using Environment Variables](#using-environment-variables)
+  - [Configuring Package Access](#configuring-package-access)
+  - [Configuring a Proxy](#configuring-a-proxy)
+  - [Revoking Tokens](#revoking-tokens)
+    - [As a Registry User](#as-a-registry-user)
+    - [As a Registry Owner](#as-a-registry-owner)
 
 ### Compatibility
 
-- Verdaccio 5.0 - 5.19
+- Verdaccio 5.0 - 5.21
 - Node 16
 - npm 7+
 - Browsers: See [browserslist](../.browserslistrc)
