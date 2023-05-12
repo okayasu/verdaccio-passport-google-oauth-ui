@@ -10,9 +10,17 @@ import { buildErrorPage } from "../../statusPage"
 import { AuthCore } from "../plugin/AuthCore"
 import { ParsedPluginConfig } from "../plugin/Config"
 import { mapValues } from "lodash"
+import { Verdaccio } from "../plugin/Verdaccio"
+
+const COOKIE_OPTIONS = {
+  sameSite: true,
+  httpOnly: false, // Has to be visible to JS
+  maxAge: 1000 * 10, // Expire quickly as these get saved to localStorage anyway
+}
 
 export class WebFlow implements IPluginMiddleware<any> {
   constructor(
+    private readonly verdaccio: Verdaccio,
     private readonly config: ParsedPluginConfig,
     private readonly core: AuthCore,
   ) {}
@@ -63,7 +71,7 @@ export class WebFlow implements IPluginMiddleware<any> {
    * associated with the account.
    *
    * We issue a JWT using these values and pass them back to the frontend as
-   * query parameters so they can be stored in the browser.
+   * cookies accessible to JS so they can be stored in the browser.
    *
    * The username and token are encrypted and base64 encoded to form a token for
    * the npm CLI.
@@ -85,11 +93,15 @@ export class WebFlow implements IPluginMiddleware<any> {
           return next(err)
         }
         if (!user) { res.redirect("/") }
-        // TODO: change token to some randome fixed string.
-        // like LocalStorage.secret key
-        const token = "abcdefg"
-        const ui = await this.core.createUiCallbackUrl(user.email, [], token)
-        return res.redirect(ui)
+        const userName = await this.core.createAuthenticatedUser(user.email, [""])
+        const uiToken = await this.verdaccio.issueUiToken(userName)
+        const npmToken = await this.verdaccio.issueNpmToken(userName, info)
+
+        res.cookie("username", userName, COOKIE_OPTIONS)
+        res.cookie("uiToken", uiToken, COOKIE_OPTIONS)
+        res.cookie("npmToken", npmToken, COOKIE_OPTIONS)
+
+        return res.redirect("/")
       })(req, res, next)
     } catch (error) {
       logger.error(error)
