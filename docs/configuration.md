@@ -14,9 +14,6 @@
     - [Using Environment Variables](#using-environment-variables)
   - [Configuring Package Access](#configuring-package-access)
   - [Configuring a Proxy](#configuring-a-proxy)
-  - [Revoking Tokens](#revoking-tokens)
-    - [As a Registry User](#as-a-registry-user)
-    - [As a Registry Owner](#as-a-registry-owner)
 
 ### Compatibility
 
@@ -150,20 +147,3 @@ export GLOBAL_AGENT_HTTP_PROXY=http://127.0.0.1:8080
 ```
 
 See the [global-agent](https://github.com/gajus/global-agent#environment-variables) docs for detailed configuration instrcutions.
-
-## Revoking Tokens
-
-### As a Registry User
-
-- Go to https://github.com/settings/applications
-- Find the OAuth app for your registry
-- Click the <kbd>Revoke</kbd> button from the <kbd>...</kbd> menu as shown below
-
-<img src="screenshots/revoke.png" width="584" />
-
-### As a Registry Owner
-
-- Go to https://github.com/settings/applications, or, if owned by an org, https://github.com/organizations/ORG_NAME/settings/applications
-- Find the OAuth app for your registry
-- Open the OAuth app settings
-- On the settings page click the <kbd>Revoke all user tokens</kbd> button

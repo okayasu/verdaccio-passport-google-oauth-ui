@@ -1,13 +1,19 @@
 # Usage
 
-1. [Login](#login)
-   1. [On the Verdaccio UI](#on-the-verdaccio-ui)
-   2. [On the Command Line](#on-the-command-line)
-      1. [Option A) Using the Built-In CLI](#option-a-using-the-built-in-cli)
-      2. [Option B) Using the Commands from the UI](#option-b-using-the-commands-from-the-ui)
-2. [Signing Out](#signing-out)
-   1. [On the Verdaccio UI](#on-the-verdaccio-ui-1)
-   2. [On the Command Line](#on-the-command-line-1)
+- [Usage](#usage)
+  - [Login](#login)
+    - [On the Verdaccio UI](#on-the-verdaccio-ui)
+    - [On the Command Line](#on-the-command-line)
+      - [Option A) Using the Built-In CLI](#option-a-using-the-built-in-cli)
+      - [Option B) Using the Commands from the UI](#option-b-using-the-commands-from-the-ui)
+  - [Signing Out](#signing-out)
+    - [On the Verdaccio UI](#on-the-verdaccio-ui-1)
+  - [Revoking Tokens](#revoking-tokens)
+    - [With JWT Security](#with-jwt-security)
+    - [With AES Encryption (legacy)](#with-aes-encryption-legacy)
+      - [As a Registry User](#as-a-registry-user)
+      - [As a Registry Owner](#as-a-registry-owner)
+    - [Revoking the Registry Owner GitHub Token](#revoking-the-registry-owner-github-token)
 
 ## Login
 
@@ -64,7 +70,53 @@ publishing packages.
 
 Click the <kbd>Logout</kbd> button as per usual.
 
-### On the Command Line
+## Revoking Tokens
 
-Unless OAuth access is revoked in the GitHub settings, the token is valid
-indefinitely.
+Verdaccio has two authorization methods. Depending on your chosen method, you
+will need to revoke the token in a different way.
+
+You can read more about this in the Verdaccio docs:
+
+- [Diving into JWT support for Verdaccio 4](https://verdaccio.org/blog/2019/04/19/diving-into-jwt-support-for-verdaccio-4)
+- [Expiring Tokens](https://verdaccio.org/docs/best/#expiring-tokens)
+
+You can find a more detailed breakdown of tokent types and token revocation in
+[#176](https://github.com/n4bb12/verdaccio-github-oauth-ui/issues/176).
+
+### With JWT Security
+
+API/CLI tokens are valid for the duration you configured in the verdaccio config
+at `security.api.jwt.sign.expiresIn`. UI tokens are valid for the duration you
+configured in the verdaccio config at `security.web.sign.expiresIn`. After this
+period, tokens are automatically invalid.
+
+You can revoke **all** tokens for **all** users by changing the Verdaccio secret
+in `storage/.verdaccio-db.json`.
+
+### With AES Encryption (legacy)
+
+You can revoke the token by revoking it in the GitHub settings.
+
+#### As a Registry User
+
+- Go to https://github.com/settings/applications
+- Find the OAuth app for your registry
+- Click the <kbd>Revoke</kbd> button from the <kbd>...</kbd> menu as shown below
+
+<img src="screenshots/revoke.png" width="584" />
+
+#### As a Registry Owner
+
+- Go to https://github.com/settings/applications, or, if owned by an org,
+  https://github.com/organizations/ORG_NAME/settings/applications
+- Find the OAuth app for your registry
+- Open the OAuth app settings
+- On the settings page click the <kbd>Revoke all user tokens</kbd> button
+
+### Revoking the Registry Owner GitHub Token
+
+GitHub memberships are determined using the `auth.github-oauth-ui.token` that
+you configured in the verdaccio config.
+
+This token can be revoked at https://github.com/settings/tokens where you
+created it.
