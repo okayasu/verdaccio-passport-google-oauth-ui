@@ -14,7 +14,7 @@ import { Config, PackageAccess, ParsedPluginConfig } from "./Config"
 import { PatchHtml } from "./PatchHtml"
 import { registerGlobalProxyAgent } from "./ProxyAgent"
 import { publicRoot, staticPath } from "../constants"
-import { Auth, Verdaccio } from "./Verdaccio"
+import { Verdaccio } from "./Verdaccio"
 
 /**
  * Implements the verdaccio plugin interfaces.
@@ -31,7 +31,7 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
   /**
    * IPluginMiddleware
    */
-  register_middlewares(app: Application, auth: Auth) {
+  register_middlewares(app: Application, auth: any) {
     this.verdaccio.setAuth(auth)
 
     // use static files.
