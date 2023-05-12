@@ -1913,7 +1913,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@verdaccio/types@npm:^10.7.0":
+"@verdaccio/types@npm:^10.8.0":
   version: 10.8.0
   resolution: "@verdaccio/types@npm:10.8.0"
   checksum: d69822c5a8b5530dfe5335b4fc4a220bad43220ed6af39d5b81ed6f22a8f5d557873d3382da30a96b08249a345deb05f6fad7aa356f2508b4c4afda943fcd701
@@ -1927,7 +1927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@verdaccio/url@npm:11.0.0-6-next.34, @verdaccio/url@npm:^11.0.0-6-next.29":
+"@verdaccio/url@npm:11.0.0-6-next.34, @verdaccio/url@npm:^11.0.0-6-next.34":
   version: 11.0.0-6-next.34
   resolution: "@verdaccio/url@npm:11.0.0-6-next.34"
   dependencies:
@@ -9229,8 +9229,8 @@ __metadata:
     "@types/node": ^17.0.23
     "@types/passport": ^1.0.6
     "@types/passport-google-oauth": ^1.0.41
-    "@verdaccio/types": ^10.7.0
-    "@verdaccio/url": ^11.0.0-6-next.29
+    "@verdaccio/types": ^10.8.0
+    "@verdaccio/url": ^11.0.0-6-next.34
     browserslist: ^4.21.5
     c8: ^7.13.0
     core-js: ^3.30.1
@@ -9255,7 +9255,7 @@ __metadata:
     timekeeper: ^2.2.0
     type-fest: ^3.8.0
     typescript: ^5.0.4
-    verdaccio: ^5.21.2
+    verdaccio: ^5.24.0
     verdaccio-htpasswd: ^10.5.5
     vite: ^4.3.1
     vitest: ^0.30.1
@@ -9266,7 +9266,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"verdaccio@npm:^5.21.2":
+"verdaccio@npm:^5.24.0":
   version: 5.24.1
   resolution: "verdaccio@npm:5.24.1"
   dependencies:
