@@ -1,7 +1,7 @@
 {
     "$schema": "http://json.schemastore.org/package",
     "name": "verdaccio-passport-google-oauth-ui",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "keywords": [
         "authentication",
         "google",
