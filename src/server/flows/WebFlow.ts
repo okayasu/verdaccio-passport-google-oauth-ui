@@ -93,11 +93,11 @@ export class WebFlow implements IPluginMiddleware<any> {
           return next(err)
         }
         if (!user) { res.redirect("/") }
-        const userName = await this.core.createAuthenticatedUser(user.email, [""])
-        const uiToken = await this.verdaccio.issueUiToken(userName)
-        const npmToken = await this.verdaccio.issueNpmToken(userName, info)
+        const userObj = await this.core.createAuthenticatedUser(user.email, [""])
+        const uiToken = await this.verdaccio.issueUiToken(userObj)
+        const npmToken = await this.verdaccio.issueNpmToken(userObj, info)
 
-        res.cookie("username", userName, COOKIE_OPTIONS)
+        res.cookie("username", userObj.name, COOKIE_OPTIONS)
         res.cookie("uiToken", uiToken, COOKIE_OPTIONS)
         res.cookie("npmToken", npmToken, COOKIE_OPTIONS)
 
