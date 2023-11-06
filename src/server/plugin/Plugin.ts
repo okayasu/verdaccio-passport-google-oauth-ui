@@ -7,7 +7,7 @@ import {
   IPluginMiddleware,
   RemoteUser,
 } from "@verdaccio/types"
-import { Application, static as expressServeStatic} from "express"
+import { Application, static as expressServeStatic } from "express"
 import { WebFlow } from "../flows"
 import { AuthCore } from "./AuthCore"
 import { Config, PackageAccess, ParsedPluginConfig } from "./Config"

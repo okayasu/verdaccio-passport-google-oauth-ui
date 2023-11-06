@@ -32,7 +32,7 @@ export interface PluginConfig {
   "client-id": string
   "client-secret": string
   "redirect-uri": string
-  "enabled": boolean
+  enabled: boolean
 }
 
 export interface Config extends VerdaccioConfig {

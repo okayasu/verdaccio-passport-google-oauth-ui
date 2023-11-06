@@ -1,6 +1,9 @@
 import { IPluginMiddleware } from "@verdaccio/types"
 import { Application, Handler, Request, Response } from "express"
-import { OAuth2Strategy, IOAuth2StrategyOptionWithRequest } from "passport-google-oauth";
+import {
+  OAuth2Strategy,
+  IOAuth2StrategyOptionWithRequest,
+} from "passport-google-oauth"
 import passport from "passport"
 import { getPublicUrl } from "@verdaccio/url"
 
@@ -31,14 +34,25 @@ export class WebFlow implements IPluginMiddleware<any> {
       clientID: this.config.clientId,
       clientSecret: this.config.clientSecret,
       callbackURL: this.config.redirectUri,
-      passReqToCallback: true
+      passReqToCallback: true,
     } as IOAuth2StrategyOptionWithRequest
-    passport.use(new OAuth2Strategy(conf, (req: any, accessToken: any, refreshToken: any, profile: any, done:any) => {
-      //console.log(accessToken);
-      //console.log(profile);
-      // GCP側で権限処理は済んでいるので、ここでは全て許可
-      return done(null, profile._json)
-    }))
+    passport.use(
+      new OAuth2Strategy(
+        conf,
+        (
+          req: any,
+          accessToken: any,
+          refreshToken: any,
+          profile: any,
+          done: any,
+        ) => {
+          //console.log(accessToken);
+          //console.log(profile);
+          // GCP側で権限処理は済んでいるので、ここでは全て許可
+          return done(null, profile._json)
+        },
+      ),
+    )
   }
 
   /**
@@ -57,7 +71,7 @@ export class WebFlow implements IPluginMiddleware<any> {
     try {
       passport.authenticate("google", {
         session: false,
-        scope: ["email"]
+        scope: ["email"],
       })(req, res, next)
     } catch (error) {
       logger.error(error)
@@ -83,26 +97,34 @@ export class WebFlow implements IPluginMiddleware<any> {
     const withBackLink = true
 
     try {
-      await passport.authenticate("google", {
-        session: false,
-        failureRedirect: "/error",
-        failWithError: true
-      }, async (err, user, info) => {
-        if (err) {
-          // res.status(401).send(buildAccessDeniedPage(withBackLink)):
-          return next(err)
-        }
-        if (!user) { res.redirect("/") }
-        const userObj = await this.core.createAuthenticatedUser(user.email, [""])
-        const uiToken = await this.verdaccio.issueUiToken(userObj)
-        const npmToken = await this.verdaccio.issueNpmToken(userObj, info)
+      await passport.authenticate(
+        "google",
+        {
+          session: false,
+          failureRedirect: "/error",
+          failWithError: true,
+        },
+        async (err, user, info) => {
+          if (err) {
+            // res.status(401).send(buildAccessDeniedPage(withBackLink)):
+            return next(err)
+          }
+          if (!user) {
+            res.redirect("/")
+          }
+          const userObj = await this.core.createAuthenticatedUser(user.email, [
+            "",
+          ])
+          const uiToken = await this.verdaccio.issueUiToken(userObj)
+          const npmToken = await this.verdaccio.issueNpmToken(userObj, info)
 
-        res.cookie("username", userObj.name, COOKIE_OPTIONS)
-        res.cookie("uiToken", uiToken, COOKIE_OPTIONS)
-        res.cookie("npmToken", npmToken, COOKIE_OPTIONS)
+          res.cookie("username", userObj.name, COOKIE_OPTIONS)
+          res.cookie("uiToken", uiToken, COOKIE_OPTIONS)
+          res.cookie("npmToken", npmToken, COOKIE_OPTIONS)
 
-        return res.redirect("/")
-      })(req, res, next)
+          return res.redirect("/")
+        },
+      )(req, res, next)
     } catch (error) {
       logger.error(error)
 
