@@ -1,7 +1,6 @@
 # Configuration
 
 - [Configuration](#configuration)
-    - [Compatibility](#compatibility)
   - [Installing the Plugin](#installing-the-plugin)
     - [Installing It Locally](#installing-it-locally)
     - [Extending the Verdaccio Docker Image](#extending-the-verdaccio-docker-image)
@@ -14,13 +13,6 @@
     - [Using Environment Variables](#using-environment-variables)
   - [Configuring Package Access](#configuring-package-access)
   - [Configuring a Proxy](#configuring-a-proxy)
-
-### Compatibility
-
-- Verdaccio 5.0 - 5.24
-- Node 16
-- npm 7+
-- Browsers: See [browserslist](../.browserslistrc)
 
 ## Installing the Plugin
 
