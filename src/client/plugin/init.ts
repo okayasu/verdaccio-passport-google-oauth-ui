@@ -48,7 +48,7 @@ export function init(options: InitOptions) {
   const { loginButton, logoutButton, updateUsageInfo } = options
 
   interruptClick(loginButton, () => {
-    if (location.pathname === logoutHref) {
+    if (location.pathname === loginHref) {
       location.reload()
     } else {
       location.href = loginHref
