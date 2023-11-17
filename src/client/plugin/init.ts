@@ -9,10 +9,6 @@ import {
 import { interruptClick, parseCookies, retry } from "./lib"
 
 function saveAndRemoveCookies() {
-  if (isLoggedIn()) {
-    return
-  }
-
   const credentials: Credentials = parseCookies(document.cookie) as any
   if (!validateCredentials(credentials)) {
     return
