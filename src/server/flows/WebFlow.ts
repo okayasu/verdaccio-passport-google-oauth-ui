@@ -5,7 +5,6 @@ import {
   IOAuth2StrategyOptionWithRequest,
 } from "passport-google-oauth"
 import passport from "passport"
-import { getPublicUrl } from "@verdaccio/url"
 
 import { logger } from "../../logger"
 import { getAuthorizePath, getCallbackPath } from "../../redirect"
@@ -14,6 +13,7 @@ import { AuthCore } from "../plugin/AuthCore"
 import { ParsedPluginConfig } from "../plugin/Config"
 import { mapValues } from "lodash"
 import { Verdaccio } from "../plugin/Verdaccio"
+import { getBaseUrl } from "../helpers"
 
 const COOKIE_OPTIONS = {
   sameSite: true,
@@ -133,15 +133,9 @@ export class WebFlow implements IPluginMiddleware<any> {
   }
 
   private getRedirectUrl(req: Request): string {
-    const urlPrefix = this.config.url_prefix
-    // Stringify headers — Verdaccio requires `string`, we have `string |
-    // string[] | undefined`.
-    const headers = mapValues(req.headers, String)
-    const verdaccioReq = { ...req, headers }
-    const baseUrl = getPublicUrl(urlPrefix, verdaccioReq)
-    const baseUrlWithoutTrailingSlash = baseUrl.replace(/\/$/, "")
+    const baseUrl = getBaseUrl(this.config, req)
     const path = getCallbackPath(req.params.id)
-    const redirectUrl = baseUrlWithoutTrailingSlash + path
+    const redirectUrl = baseUrl + path
 
     return redirectUrl
   }
