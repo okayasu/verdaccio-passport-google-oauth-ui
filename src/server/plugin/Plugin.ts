@@ -38,7 +38,7 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     app.use(staticPath, expressServeStatic(publicRoot))
 
     const children = [
-      new PatchHtml(),
+      new PatchHtml(this.parsedConfig),
       new WebFlow(this.verdaccio, this.parsedConfig, this.core),
     ]
 
