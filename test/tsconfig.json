@@ -5,5 +5,5 @@
     "types": ["node", "vitest"],
   },
   "extends": "../tsconfig.json",
-  "include": [".", "../src"],
+  "include": [".", "../src"]
 }
