@@ -24,7 +24,8 @@
   "main": "dist/server/index.js",
   "bin": "dist/cli/index.js",
   "files": [
-    "dist"
+    "dist",
+    "verdaccio.yaml"
   ],
   "scripts": {
     "build": "bash run build",
