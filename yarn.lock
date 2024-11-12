@@ -2130,22 +2130,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/passport-google-oauth@npm:^1.0.41":
-  version: 1.0.44
-  resolution: "@types/passport-google-oauth@npm:1.0.44"
+"@types/passport-google-oauth@npm:^1.0.45":
+  version: 1.0.45
+  resolution: "@types/passport-google-oauth@npm:1.0.45"
   dependencies:
     "@types/express": "*"
     "@types/passport": "*"
-  checksum: a7cde4d490fcb3b3ac990fdee22b3f7182344dd79314ac532fa927f7f50c03f9f653d9fc8854b7d298096e6950afecbab3316d9452802fd7fdb75e05d155d162
+  checksum: beb1361ea8f7e2242e4d0f9d5b862014d10f56fd79879624ded5a045d3a1f15eb1ab3c470fbab138a02f957947c5d8147f8811c359ca98a54d561e70ed7ab05b
   languageName: node
   linkType: hard
 
-"@types/passport@npm:*, @types/passport@npm:^1.0.6":
+"@types/passport@npm:*":
   version: 1.0.14
   resolution: "@types/passport@npm:1.0.14"
   dependencies:
     "@types/express": "*"
   checksum: 8e89c99d770db8acac54f15e06867a4795c441ef17007784dbb4494f5c5c371154d1ee7ef2abbadbcd10619e0ed3304f837cb78a1be478cb783a6ca98d49f3f9
+  languageName: node
+  linkType: hard
+
+"@types/passport@npm:^1.0.17":
+  version: 1.0.17
+  resolution: "@types/passport@npm:1.0.17"
+  dependencies:
+    "@types/express": "*"
+  checksum: b131d5963576e759f972f038bb7461dcaaa1dc484a488eb093eac6a9f8d4f51c9b7adcd432ae84e3ecb68839dfba16f6d569f36664330b6af59d36ff3c4c64e2
   languageName: node
   linkType: hard
 
@@ -7818,7 +7827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport@npm:^0.5.2":
+"passport@npm:^0.5.3":
   version: 0.5.3
   resolution: "passport@npm:0.5.3"
   dependencies:
@@ -10166,8 +10175,8 @@ __metadata:
     "@types/memory-cache": ^0.2.5
     "@types/minimist": ^1.2.5
     "@types/node": ^20.12.12
-    "@types/passport": ^1.0.6
-    "@types/passport-google-oauth": ^1.0.41
+    "@types/passport": ^1.0.17
+    "@types/passport-google-oauth": ^1.0.45
     "@types/query-string": ^6.3.0
     "@verdaccio/types": ^10.8.0
     "@verdaccio/url": ^11.0.0-6-next.42
@@ -10185,7 +10194,7 @@ __metadata:
     open: ^8.4.2
     ow: ^0.28.2
     parcel: ~2.4.1
-    passport: ^0.5.2
+    passport: ^0.5.3
     passport-google-oauth: ^2.0.0
     picocolors: ^1.0.1
     prettier: ^3.2.5
