@@ -61,7 +61,7 @@
     "octokit": "^3.2.1",
     "open": "^8.4.2",
     "ow": "^0.28.2",
-    "passport": "^0.5.3",
+    "passport": "^0.7.0",
     "passport-google-oauth": "^2.0.0",
     "picocolors": "^1.1.1",
     "query-string": "^7.1.3"

@@ -7703,13 +7703,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "passport@npm:0.5.3"
+"passport@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "passport@npm:0.7.0"
   dependencies:
     passport-strategy: "npm:1.x.x"
     pause: "npm:0.0.1"
-  checksum: 10/11ca647263572e0285179c8a13942e64be72c6c40759cb1fcebb8258cc5e57bc1671d08071ca0da0a15045ab0e5bb6745aff4b04cb52b2f66815dc45d612015e
+    utils-merge: "npm:^1.0.1"
+  checksum: 10/0ebd4de8e3cba6731b1fddd09b95b8332526f316afded9c9589ff68751e10001c9f1c007170a516e8c1909f9fafdc378c12feb82820241856775005924735b29
   languageName: node
   linkType: hard
 
@@ -9700,7 +9701,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x":
+"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x, utils-merge@npm:^1.0.1":
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10/5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798
@@ -9827,7 +9828,7 @@ __metadata:
     open: "npm:^8.4.2"
     ow: "npm:^0.28.2"
     parcel: "npm:~2.4.1"
-    passport: "npm:^0.5.3"
+    passport: "npm:^0.7.0"
     passport-google-oauth: "npm:^2.0.0"
     picocolors: "npm:^1.1.1"
     prettier: "npm:^3.5.3"
