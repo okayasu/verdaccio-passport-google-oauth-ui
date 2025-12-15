@@ -3092,6 +3092,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"copy-to-clipboard@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "copy-to-clipboard@npm:3.3.3"
+  dependencies:
+    toggle-selection: "npm:^1.0.6"
+  checksum: 10/e0a325e39b7615108e6c1c8ac110ae7b829cdc4ee3278b1df6a0e4228c490442cc86444cd643e2da344fbc424b3aab8909e2fec82f8bc75e7e5b190b7c24eecf
+  languageName: node
+  linkType: hard
+
 "core-js@npm:3.30.2":
   version: 3.30.2
   resolution: "core-js@npm:3.30.2"
@@ -7021,6 +7030,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"toggle-selection@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "toggle-selection@npm:1.0.6"
+  checksum: 10/9a0ed0ecbaac72b4944888dacd79fe0a55eeea76120a4c7e46b3bb3d85b24f086e90560bb22f5a965654a25ab43d79ec47dfdb3f1850ba740b14c5a50abc7040
+  languageName: node
+  linkType: hard
+
 "toidentifier@npm:1.0.1":
   version: 1.0.1
   resolution: "toidentifier@npm:1.0.1"
@@ -7370,6 +7386,7 @@ __metadata:
     "@verdaccio/url": "npm:^11.0.0-6-next.42"
     "@vitest/coverage-v8": "npm:^3.2.4"
     browserslist: "npm:^4.27.0"
+    copy-to-clipboard: "npm:^3.3.3"
     core-js: "npm:^3.46.0"
     dotenv: "npm:^17.2.2"
     express: "npm:^5.1.0"
