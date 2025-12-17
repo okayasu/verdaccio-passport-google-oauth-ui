@@ -1,14 +1,14 @@
 import { JWTSignOptions, RemoteUser } from "@verdaccio/types"
 import { NextFunction } from "express"
 import merge from "lodash/merge"
-import { VerdaccioConfig } from "../plugin/Config"
+import { VerdaccioGoogleOAuthConfig } from "../plugin/Config"
 
 import type Auth from "verdaccio/build/lib/auth"
 
 export type User = RemoteUser
 export { Auth }
 
-// Most of this is duplicated Verdaccio code because it is unfortunately not availabel via API.
+// Most of this is duplicated Verdaccio code because it is unfortunately not available via API.
 // https://github.com/verdaccio/verdaccio/blob/master/src/lib/auth-utils.ts#L129
 
 const TIME_EXPIRATION_7D = "7d" as const
@@ -25,7 +25,7 @@ const defaultSecurity = {
   },
 } as const
 
-function getSecurity(config: VerdaccioConfig) {
+function getSecurity(config: VerdaccioGoogleOAuthConfig) {
   return merge({}, defaultSecurity, config.security)
 }
 
@@ -37,7 +37,7 @@ export class Verdaccio {
 
   private auth!: Auth
 
-  constructor(private readonly config: VerdaccioConfig) {}
+  constructor(private readonly config: VerdaccioGoogleOAuthConfig) {}
 
   setAuth(auth: Auth): Verdaccio {
     this.auth = auth

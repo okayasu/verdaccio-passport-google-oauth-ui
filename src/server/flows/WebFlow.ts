@@ -1,4 +1,3 @@
-import { IPluginMiddleware } from "@verdaccio/types"
 import { Application, Handler, Request, Response } from "express"
 import {
   OAuth2Strategy,
@@ -11,9 +10,8 @@ import { getAuthorizePath, getCallbackPath } from "../../redirect"
 import { buildErrorPage } from "../../statusPage"
 import { AuthCore } from "../plugin/AuthCore"
 import { ParsedPluginConfig } from "../plugin/Config"
-import { mapValues } from "lodash"
 import { Verdaccio } from "../plugin/Verdaccio"
-import { getBaseUrl } from "../helpers"
+import { getBaseUrl, IPluginMiddleware } from "../helpers"
 
 const COOKIE_OPTIONS = {
   sameSite: true,
@@ -21,7 +19,7 @@ const COOKIE_OPTIONS = {
   maxAge: 1000 * 10, // Expire quickly as these get saved to localStorage anyway
 }
 
-export class WebFlow implements IPluginMiddleware<any> {
+export class WebFlow implements IPluginMiddleware {
   constructor(
     private readonly verdaccio: Verdaccio,
     private readonly config: ParsedPluginConfig,

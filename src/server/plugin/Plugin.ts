@@ -1,16 +1,9 @@
-import {
-  AllowAccess,
-  AuthAccessCallback,
-  AuthCallback,
-  AuthError,
-  IPluginAuth,
-  IPluginMiddleware,
-  RemoteUser,
-} from "@verdaccio/types"
+import { AllowAccess, PackageAccess, RemoteUser } from "@verdaccio/types"
+import { pluginUtils } from "@verdaccio/core"
 import { Application, static as expressServeStatic } from "express"
 import { WebFlow } from "../flows"
 import { AuthCore } from "./AuthCore"
-import { Config, PackageAccess, ParsedPluginConfig } from "./Config"
+import { VerdaccioGoogleOAuthConfig, ParsedPluginConfig } from "./Config"
 import { PatchHtml } from "./PatchHtml"
 import { registerGlobalProxyAgent } from "./ProxyAgent"
 import { publicRoot, staticPath } from "../constants"
@@ -19,17 +12,26 @@ import { Verdaccio } from "./Verdaccio"
 /**
  * Implements the verdaccio plugin interfaces.
  */
-export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
+export class Plugin
+  extends pluginUtils.Plugin<VerdaccioGoogleOAuthConfig>
+  implements
+    pluginUtils.ExpressMiddleware<VerdaccioGoogleOAuthConfig, any, any>,
+    pluginUtils.Auth<VerdaccioGoogleOAuthConfig>
+{
   private readonly parsedConfig = new ParsedPluginConfig(this.config)
   private readonly verdaccio = new Verdaccio(this.config)
   private readonly core = new AuthCore(this.verdaccio, this.parsedConfig)
 
-  constructor(private readonly config: Config) {
+  constructor(
+    readonly config: VerdaccioGoogleOAuthConfig,
+    options?: any,
+  ) {
+    super(config, options)
     registerGlobalProxyAgent()
   }
 
   /**
-   * IPluginMiddleware
+   * pluginUtils.ExpressMiddleware
    */
   register_middlewares(app: Application, auth: any) {
     this.verdaccio.setAuth(auth)
@@ -55,26 +57,28 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
   }
 
   /**
-   * IPluginAuth
+   * pluginUtils.Auth
    */
   async authenticate(
     userName: string,
     userToken: string,
-    callback: AuthCallback,
+    callback: pluginUtils.AuthCallback,
   ): Promise<void> {
     callback(new Error("Signup/Login Not Implemented") as AuthError, false)
   }
 
   /**
-   * IPluginAuth
+   * pluginUtils.Auth
    */
   allow_access(
     user: RemoteUser,
-    config: AllowAccess & PackageAccess,
-    callback: AuthAccessCallback,
+    pkg:
+      | (VerdaccioGoogleOAuthConfig & PackageAccess)
+      | (AllowAccess & PackageAccess),
+    callback: pluginUtils.AuthAccessCallback,
   ): void {
-    if (config.access) {
-      const grant = config.access.some((group) => user.groups.includes(group))
+    if (pkg.access) {
+      const grant = pkg.access.some((group) => user.groups.includes(group))
       callback(null, grant)
     } else {
       callback(null, true)

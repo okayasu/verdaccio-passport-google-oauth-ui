@@ -49,7 +49,8 @@
     "watch": "nodemon --watch src --watch verdaccio.yaml --ext ts,css,yaml --exec \"yarn dev\""
   },
   "dependencies": {
-    "@verdaccio/url": "^11.0.0-6-next.42",
+    "@verdaccio/core": "^6.0.0-6-next.76",
+    "@verdaccio/url": "^13.0.0-next-8.28",
     "copy-to-clipboard": "^3.3.3",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
@@ -72,7 +73,7 @@
     "@types/node": "^24.3.0",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth": "^1.0.45",
-    "@verdaccio/types": "^10.8.0",
+    "@verdaccio/types": "^13.0.0-next-8.10",
     "@vitest/coverage-v8": "^3.2.4",
     "browserslist": "^4.27.0",
     "core-js": "^3.46.0",
@@ -83,12 +84,12 @@
     "timekeeper": "^2.3.1",
     "type-fest": "^4.41.0",
     "typescript": "^5.9.3",
-    "verdaccio": "~6.1.6",
-    "verdaccio-htpasswd": "^10.5.5",
+    "verdaccio": "^6.2.4",
+    "verdaccio-htpasswd": "^13.0.0-next-8.28",
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "verdaccio": ">=5"
+    "verdaccio": ">=6"
   },
   "packageManager": "yarn@4.8.1",
   "publishConfig": {
@@ -96,7 +97,7 @@
   },
   "targets": {
     "client": {
-      "source": "src/client/verdaccio-5.ts",
+      "source": "src/client/verdaccio-6.ts",
       "distDir": "dist/client",
       "context": "browser",
       "includeNodeModules": true

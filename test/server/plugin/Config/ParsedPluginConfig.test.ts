@@ -1,6 +1,6 @@
 import { pluginKey } from "src/constants"
 import {
-  Config,
+  VerdaccioGoogleOAuthConfig,
   ParsedPluginConfig,
   PluginConfig,
 } from "src/server/plugin/Config"
@@ -17,7 +17,7 @@ describe("ParsedPluginConfig", () => {
     token: "token",
   }
   it.fails("middlewares key is required", () => {
-    const invalidConfig: Config = {
+    const invalidConfig: VerdaccioGoogleOAuthConfig = {
       auth: { [pluginKey]: enabledPluginConfig },
     } as any
 
@@ -25,7 +25,7 @@ describe("ParsedPluginConfig", () => {
   })
 
   it.fails("auth key is required", () => {
-    const invalidConfig: Config = {
+    const invalidConfig: VerdaccioGoogleOAuthConfig = {
       middlewares: { [pluginKey]: minimalPluginConfig },
     } as any
 
@@ -33,7 +33,7 @@ describe("ParsedPluginConfig", () => {
   })
 
   it("accepts the minimal configuration and uses the documented defaults", () => {
-    const config: Config = {
+    const config: VerdaccioGoogleOAuthConfig = {
       middlewares: { [pluginKey]: enabledPluginConfig },
       auth: { [pluginKey]: minimalPluginConfig },
     } as any
@@ -71,7 +71,7 @@ describe("ParsedPluginConfig", () => {
       "enterprise-origin": "enterpriseOrigin",
     }
 
-    const config: Config = {
+    const config: VerdaccioGoogleOAuthConfig = {
       middlewares: { [pluginKey]: enabledPluginConfig },
       auth: { [pluginKey]: minimalPluginConfig },
       url_prefix: "/verdaccio/",
