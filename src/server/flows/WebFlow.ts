@@ -110,9 +110,7 @@ export class WebFlow implements IPluginMiddleware {
           if (!user) {
             res.redirect("/")
           }
-          const userObj = await this.core.createAuthenticatedUser(user.email, [
-            "",
-          ])
+          const userObj = await this.core.createAuthenticatedUser(user.email)
           const uiToken = await this.verdaccio.issueUiToken(userObj)
           const npmToken = await this.verdaccio.issueNpmToken(userObj, info)
 

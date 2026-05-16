@@ -67,9 +67,9 @@ export class Plugin
     callback(new Error("Signup/Login Not Implemented") as errorUtils.VerdaccioError, false)
   }
 
-  async _allow(
+  private async _allow(
     user: RemoteUser,
-    pkgAccess: string[],
+    pkgAccess: string[] | undefined,
     callback: pluginUtils.AccessCallback,
   ) {
     if (!user.name) {
@@ -82,7 +82,7 @@ export class Plugin
     const userGroups = await this.cache.getGroups(user.name)
 
     // pkg.access cannot be undefined here due to normalisePackageAccess() in @verdaccio/config
-    const grant = pkgAccess.some((group) => userGroups.includes(group))
+    const grant = pkgAccess?.some((group) => userGroups.includes(group))
     */
     const grant = true
     callback(null, grant)
@@ -93,13 +93,10 @@ export class Plugin
    */
   async allow_access(
     user: RemoteUser,
-    pkg:
-      | (VerdaccioGoogleOAuthConfig & PackageAccess)
-      | (AllowAccess & PackageAccess),
+    pkg: PackageAccess & (AllowAccess | VerdaccioGoogleOAuthConfig),
     callback: pluginUtils.AuthAccessCallback,
   ): Promise<void> {
-    // pkg.access cannot be undefined here due to normalisePackageAccess() in @verdaccio/config
-    await this._allow(user, pkg.access!, callback)
+    await this._allow(user, pkg.access, callback)
   }
 
   /**
@@ -107,13 +104,10 @@ export class Plugin
    */
   async allow_publish(
     user: RemoteUser,
-    pkg:
-      | (VerdaccioGoogleOAuthConfig & PackageAccess)
-      | (AllowAccess & PackageAccess),
+    pkg: PackageAccess & (AllowAccess | VerdaccioGoogleOAuthConfig),
     callback: pluginUtils.AccessCallback,
   ): Promise<void> {
-    // pkg.publish cannot be undefined here due to normalisePackageAccess() in @verdaccio/config
-    await this._allow(user, pkg.publish!, callback)
+    await this._allow(user, pkg.publish, callback)
   }
 
   /**
@@ -121,9 +115,7 @@ export class Plugin
    */
   async allow_unpublish(
     user: RemoteUser,
-    pkg:
-      | (VerdaccioGoogleOAuthConfig & PackageAccess)
-      | (AllowAccess & PackageAccess),
+    pkg: PackageAccess & (AllowAccess | VerdaccioGoogleOAuthConfig),
     callback: pluginUtils.AccessCallback,
   ): Promise<void> {
     if (pkg.unpublish === false) {
@@ -142,7 +134,6 @@ export class Plugin
       return
     }
 
-    // pkg.unpublish cannot be undefined here due to normalisePackageAccess() in @verdaccio/config
-    await this._allow(user, pkg.unpublish!, callback)
+    await this._allow(user, pkg.unpublish, callback)
   }
 }
