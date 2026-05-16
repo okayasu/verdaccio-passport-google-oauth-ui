@@ -1,10 +1,6 @@
-## Troubleshooting
+# 🔧 Troubleshooting
 
-1. [Troubleshooting](#troubleshooting)
-   1. [Error: "verdaccio-github-oauth-ui plugin not found"](#error-verdaccio-github-oauth-ui-plugin-not-found)
-   2. [Error: "Failed requesting GitHub user info"](#error-failed-requesting-github-user-info)
-
-### Error: "verdaccio-github-oauth-ui plugin not found"
+### 🛑 Error: "verdaccio-passport-google-oauth-ui plugin not found"
 
 Avoid using a global installation of Verdaccio. Despite what Verdaccio examples
 or documentation suggest, globally installed plugins may not work.
@@ -24,10 +20,16 @@ Solutions that worked for others:
   It installs or resolves modules differently such that globally installed plugins are found.
 - Extend the official Docker image. It uses a local Verdaccio installation by default.
 
-### Error: "Failed requesting GitHub user info"
+### 🛑 Error: "Failed requesting GitHub user info"
 
 - Double-check that your configured client id and client secret are correct.
 - If you are behind a proxy, make sure you are also passing through the query
   parameters to Verdaccio. See
   [#47](https://github.com/n4bb12/verdaccio-github-oauth-ui/issues/47#issuecomment-643814163)
   for an example using `nginx`.
+
+### 🛑 Error: "npm ERR! Unable to authenticate, your authentication token seems to be invalid." or "error--- undefined is forbidden publish for"
+
+You can run into this problem if you're using Verdaccio's legacy token
+encryption of Verdaccio (which is inconveniently the default).
+

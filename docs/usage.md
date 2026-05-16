@@ -1,21 +1,6 @@
-# Usage
+# 💻 Usage
 
-- [Usage](#usage)
-  - [Login](#login)
-    - [On the Verdaccio UI](#on-the-verdaccio-ui)
-    - [On the Command Line](#on-the-command-line)
-      - [Option A) Using the Built-In CLI](#option-a-using-the-built-in-cli)
-      - [Option B) Using the Commands from the UI](#option-b-using-the-commands-from-the-ui)
-  - [Signing Out](#signing-out)
-    - [On the Verdaccio UI](#on-the-verdaccio-ui-1)
-  - [Revoking Tokens](#revoking-tokens)
-    - [With JWT Security](#with-jwt-security)
-    - [With AES Encryption (legacy)](#with-aes-encryption-legacy)
-      - [As a Registry User](#as-a-registry-user)
-      - [As a Registry Owner](#as-a-registry-owner)
-    - [Revoking the Registry Owner GitHub Token](#revoking-the-registry-owner-github-token)
-
-## Login
+## 🔑 Login
 
 ### On the Verdaccio UI
 
@@ -43,9 +28,7 @@ On success you should see this page in your browser:
 
 #### Option B) Using the Commands from the UI
 
-- Verdaccio 5:
-
-Open the "Configuration" dialog and click "Copy to clipboard":
+- Open the "Configuration" dialog and click "Copy to clipboard":
 
 <img src="screenshots/configuration-dialog.png" width="450" />
 
@@ -64,13 +47,13 @@ npm whoami --registry http://localhost:4873
 If you see your GitHub username, you are ready to start installing and
 publishing packages.
 
-## Signing Out
+## 🚪 Signing Out
 
 ### On the Verdaccio UI
 
 Click the <kbd>Logout</kbd> button as per usual.
 
-## Revoking Tokens
+## 🗑️ Revoking Tokens
 
 Verdaccio has two authorization methods. Depending on your chosen method, you
 will need to revoke the token in a different way.

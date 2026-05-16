@@ -1,40 +1,8 @@
-# Configuration
+# ⚙️ Configuration
 
-- [Configuration](#configuration)
-  - [Installing the Plugin](#installing-the-plugin)
-    - [Installing It Locally](#installing-it-locally)
-    - [Extending the Verdaccio Docker Image](#extending-the-verdaccio-docker-image)
-    - [Global Installation](#global-installation)
-  - [Registering a GitHub OAuth Application](#registering-a-github-oauth-application)
-  - [Configuring Verdaccio](#configuring-verdaccio)
-    - [`client-id` and `client-secret` (required, string)](#client-id-and-client-secret-required-string)
-    - [`token` (required, string)](#token-required-string)
-    - [`enterprise-origin` (optional, string)](#enterprise-origin-optional-string)
-    - [Using Environment Variables](#using-environment-variables)
-  - [Configuring Package Access](#configuring-package-access)
-  - [Configuring a Proxy](#configuring-a-proxy)
+> 📥 To install the plugin, see [Installation](installation.md).
 
-## Installing the Plugin
-
-Some recommended ways to install the plugin:
-
-### Installing It Locally
-
-```bash
-npm install verdaccio-github-oauth-ui
-```
-
-### Extending the Verdaccio Docker Image
-
-See the [Dockerfile](../Dockerfile) for a simple example.
-
-Verdaccio also has various [Docker examples](https://github.com/verdaccio/verdaccio/tree/master/docker-examples).
-
-### Global Installation
-
-Avoid installing plugins globally. See the [troubleshooting](./troubleshooting.md#error-verdaccio-github-oauth-ui-plugin-not-found) guide for more information on why this is likely to cause problems.
-
-## Registering a GitHub OAuth Application
+## 📝 Registering a GitHub OAuth Application
 
 - Register a new OAuth application at https://github.com/settings/applications/new, or, if it should be owned by an organization, https://github.com/organizations/ORG_NAME/settings/apps/new
 - The callback URL should be `YOUR_REGISTRY_URL/-/oauth/callback`
@@ -43,7 +11,7 @@ Example:
 
 <img src="screenshots/register-app.png" width="552" />
 
-## Configuring Verdaccio
+## 🛠️ Configuring Verdaccio
 
 Merge the below options with your existing Verdaccio config:
 
@@ -93,7 +61,7 @@ For example, either of the below will work:
 
 The environment variable names can be chosen freely. These are just examples.
 
-## Configuring Package Access
+## 🔐 Configuring Package Access
 
 The following groups can be used to configure package permissions (access, publish, unpublish) as shown below:
 
@@ -129,7 +97,7 @@ packages:
 
 See [Package Access](https://verdaccio.org/docs/en/packages) for more examples.
 
-## Configuring a Proxy
+## 🌐 Configuring a Proxy
 
 If you are behind a proxy, the plugin needs to know the proxy server URL to make requests to the GitHub API.
 You can do that by configuring [global-agent](https://github.com/gajus/global-agent) environment variables:
