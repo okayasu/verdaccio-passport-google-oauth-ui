@@ -20,11 +20,19 @@ const COOKIE_OPTIONS = {
 }
 
 export class WebFlow implements IPluginMiddleware {
+  private readonly verdaccio: Verdaccio
+  private readonly config: ParsedPluginConfig
+  private readonly core: AuthCore
+
   constructor(
-    private readonly verdaccio: Verdaccio,
-    private readonly config: ParsedPluginConfig,
-    private readonly core: AuthCore,
-  ) {}
+    verdaccio: Verdaccio,
+    config: ParsedPluginConfig,
+    core: AuthCore,
+  ) {
+    this.verdaccio = verdaccio
+    this.config = config
+    this.core = core
+  }
 
   initialize(app: Application) {
     //app.use(passport.initialize());

@@ -29,15 +29,19 @@ function getSecurity(config: VerdaccioGoogleOAuthConfig) {
   return merge({}, defaultSecurity, config.security)
 }
 
+type Security = ReturnType<typeof getSecurity>
+
 /**
  * Abstract Verdaccio version differences and usage of all Verdaccio objects.
  */
 export class Verdaccio {
-  readonly security = getSecurity(this.config)
+  readonly security: Security
 
   private auth!: Auth
 
-  constructor(private readonly config: VerdaccioGoogleOAuthConfig) {}
+  constructor(private readonly config: VerdaccioGoogleOAuthConfig) {
+    this.security = getSecurity(this.config)
+  }
 
   setAuth(auth: Auth): Verdaccio {
     this.auth = auth

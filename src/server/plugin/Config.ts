@@ -100,31 +100,38 @@ function getConfigValue<T>(
 //
 
 export class ParsedPluginConfig {
-  readonly url_prefix = this.config.url_prefix ?? ""
-
-  readonly clientId = getConfigValue<string>(
-    this.config,
-    "client-id",
-    assert.string.nonEmpty,
-  )
-
-  readonly clientSecret = getConfigValue<string>(
-    this.config,
-    "client-secret",
-    assert.string.nonEmpty,
-  )
-
-  public readonly redirectUri = getConfigValue<string>(
-    this.config,
-    "redirect-uri",
-    assert.string.nonEmpty,
-  )
+  readonly url_prefix: string
+  readonly clientId: string
+  readonly clientSecret: string
+  readonly token: string
+  readonly enterpriseOrigin: string | undefined
+  readonly cacheTTLms: number | undefined
 
   constructor(readonly config: VerdaccioGoogleOAuthConfig) {
     validateVersion()
 
     validateNodeExists(config, "middlewares")
     validateNodeExists(config, "auth")
+
+    this.url_prefix = this.config.url_prefix ?? ""
+
+    this.clientId = getConfigValue<string>(
+      this.config,
+      "client-id",
+      assert.string.nonEmpty,
+    )
+
+    this.clientSecret = getConfigValue<string>(
+      this.config,
+      "client-secret",
+      assert.string.nonEmpty,
+    )
+
+    this.token = getConfigValue<string>(
+      this.config,
+      "token",
+      assert.string.nonEmpty,
+    )
 
     this.parseConfiguredPackageGroups()
   }
