@@ -53,7 +53,7 @@ export const testUiToken = "UI_TOKEN"
 export const testNpmToken = "NPM_TOKEN"
 export const testErrorMessage = "EXPECTED_ERROR"
 
-export const testUser = createTestUser(testProviderGroups)
+export const testUser = createTestUser()
 
 export function createTestPluginConfig(
   pluginConfig?: Partial<PluginConfig>,
@@ -135,22 +135,19 @@ export function createTestAuthProvider() {
   return provider
 }
 
-export function createTestAuthCore(config: Partial<VerdaccioGoogleOAuthConfig> = {}) {
-  return new AuthCore(
-    createTestVerdaccio(config),
-    new ParsedPluginConfig(createTestVerdaccioConfig(config)),
-  )
+export function createTestAuthCore() {
+  return new AuthCore()
 }
 
 export function createTestPlugin(config: Partial<VerdaccioGoogleOAuthConfig> = {}) {
   return new Plugin(createTestVerdaccioConfig(config))
 }
 
-export function createTestUser(groups: string[]): RemoteUser {
+export function createTestUser(): RemoteUser {
   return {
     name: testUserName,
-    groups: [...authenticatedUserGroups, ...groups],
-    real_groups: [...groups],
+    groups: [...authenticatedUserGroups],
+    real_groups: [],
   }
 }
 
