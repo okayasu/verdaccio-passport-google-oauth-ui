@@ -33,7 +33,6 @@ This Verdaccio plugin offers Google OAuth integration with the Verdaccio UI and 
 | **UI Integration**         | [Usage info on the Verdaccio UI](docs/usage.md#option-b-using-the-commands-from-the-ui) is updated for use with Google OAuth.                                                                                                                             |
 | **CLI Configuration**      | The plugin lets you [configure npm with a single command](docs/usage.md#on-the-command-line).                                                                                                                                                             |
 | **Granular Authorization** | Access, publish, unpublish [package permissions can be limited](docs/configuration.md#configuring-package-access) to specific Google <kbd>team members</kbd>>. |
-| **Proxy Support**          | Supports [proxy configuration](docs/configuration.md#-configuring-a-proxy) via `global-agent`.                                                                                                                                                            |
 
 ## � Documentation
 

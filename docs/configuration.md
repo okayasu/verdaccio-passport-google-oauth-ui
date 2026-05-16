@@ -96,14 +96,3 @@ packages:
 ```
 
 See [Package Access](https://verdaccio.org/docs/en/packages) for more examples.
-
-## 🌐 Configuring a Proxy
-
-If you are behind a proxy, the plugin needs to know the proxy server URL to make requests to the GitHub API.
-You can do that by configuring [global-agent](https://github.com/gajus/global-agent) environment variables:
-
-```bash
-export GLOBAL_AGENT_HTTP_PROXY=http://127.0.0.1:8080
-```
-
-See the [global-agent](https://github.com/gajus/global-agent#environment-variables) docs for detailed configuration instrcutions.
