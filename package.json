@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/package",
   "name": "verdaccio-passport-google-oauth-ui",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "keywords": [
     "authentication",
     "google",
@@ -18,11 +18,15 @@
     "verdaccio-plugin"
   ],
   "bugs": "https://github.com/okayasu/verdaccio-passport-google-oauth-ui/issues",
-  "repository": "github:okayasu/verdaccio-passport-google-oauth-ui",
+  "repository": {
+    "url": "git+https://github.com/okayasu/verdaccio-passport-google-oauth-ui.git"
+  },
   "license": "MIT",
   "author": "Masanori Okayasu",
   "main": "dist/server/index.js",
-  "bin": "dist/cli/index.js",
+  "bin": {
+    "verdaccio-passport-google-oauth-ui": "dist/cli/index.js"
+  },
   "files": [
     "dist",
     "verdaccio.yaml"
