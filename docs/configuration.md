@@ -95,4 +95,4 @@ packages:
     access: github/org/GITHUB_ORG/repo/GITHUB_REPO
 ```
 
-See [Package Access](https://verdaccio.org/docs/en/packages) for more examples.
+See [Package Access](https://verdaccio.org/docs/packages) for more examples.

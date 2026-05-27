@@ -14,7 +14,7 @@ export const cliProviderId = "cli"
 export const cliAuthorizeUrl = "/oauth/authorize"
 
 /**
- * See https://verdaccio.org/docs/en/packages
+ * See https://verdaccio.org/docs/packages
  */
 export const authenticatedUserGroups = [
   "$all",
