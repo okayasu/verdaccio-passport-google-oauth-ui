@@ -135,12 +135,4 @@ export class WebFlow implements IPluginMiddleware {
       res.status(500).send(buildErrorPage(error, withBackLink))
     }
   }
-
-  private getRedirectUrl(req: Request): string {
-    const baseUrl = getBaseUrl(this.config, req)
-    const path = getCallbackPath(req.params.id)
-    const redirectUrl = baseUrl + path
-
-    return redirectUrl
-  }
 }

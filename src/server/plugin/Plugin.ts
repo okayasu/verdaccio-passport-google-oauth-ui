@@ -1,6 +1,7 @@
 import { AllowAccess, PackageAccess, RemoteUser } from "@verdaccio/types"
 import { pluginUtils, errorUtils } from "@verdaccio/core"
 import { Application, static as expressServeStatic } from "express"
+import { logger } from "../../logger"
 import { WebFlow } from "../flows"
 import { VerdaccioGoogleOAuthConfig, ParsedPluginConfig } from "./Config"
 import { PatchHtml } from "./PatchHtml"
@@ -35,14 +36,17 @@ export class Plugin
     pluginUtils.ExpressMiddleware<VerdaccioGoogleOAuthConfig, any, any>,
     pluginUtils.Auth<VerdaccioGoogleOAuthConfig>
 {
-  private readonly parsedConfig = new ParsedPluginConfig(this.config)
-  private readonly verdaccio = new Verdaccio(this.config)
+  private readonly parsedConfig: ParsedPluginConfig
+  private readonly verdaccio: Verdaccio
 
   constructor(
     readonly config: VerdaccioGoogleOAuthConfig,
     options?: any,
   ) {
     super(config, options)
+    const fullConfig = (options?.config as VerdaccioGoogleOAuthConfig) ?? config
+    this.parsedConfig = new ParsedPluginConfig(fullConfig)
+    this.verdaccio = new Verdaccio(fullConfig)
     registerGlobalProxyAgent()
   }
 

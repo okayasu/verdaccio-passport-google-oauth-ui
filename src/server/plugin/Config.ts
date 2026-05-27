@@ -103,7 +103,7 @@ export class ParsedPluginConfig {
   readonly url_prefix: string
   readonly clientId: string
   readonly clientSecret: string
-  readonly token: string
+  readonly redirectUri: string
   readonly enterpriseOrigin: string | undefined
   readonly cacheTTLms: number | undefined
 
@@ -127,9 +127,9 @@ export class ParsedPluginConfig {
       assert.string.nonEmpty,
     )
 
-    this.token = getConfigValue<string>(
+    this.redirectUri = getConfigValue<string>(
       this.config,
-      "token",
+      "redirect-uri",
       assert.string.nonEmpty,
     )
 

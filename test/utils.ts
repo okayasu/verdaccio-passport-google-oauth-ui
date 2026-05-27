@@ -1,7 +1,6 @@
 import { AllowAccess, PackageAccess, RemoteUser } from "@verdaccio/types"
 import { Request } from "express"
 import { authenticatedUserGroups, pluginKey } from "src/constants"
-import { AuthProvider } from "src/server/plugin/AuthProvider"
 import {
   VerdaccioGoogleOAuthConfig,
   ParsedPluginConfig,
@@ -10,7 +9,6 @@ import {
 import { Plugin } from "src/server/plugin/Plugin"
 import { Verdaccio } from "src/server/plugin/Verdaccio"
 import timekeeper from "timekeeper"
-import Auth from "verdaccio/build/lib/auth"
 import { afterEach, beforeEach, vi } from "vitest"
 import { PartialDeep } from "type-fest"
 
@@ -60,7 +58,8 @@ export function createTestPluginConfig(
   return {
     "client-id": testClientId,
     "client-secret": testClientSecret,
-    token: testToken,
+    "redirect-uri": testToken,
+    enabled: true,
     ...pluginConfig,
   }
 }
