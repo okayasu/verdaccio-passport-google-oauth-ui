@@ -2,14 +2,14 @@ import { AllowAccess, PackageAccess, RemoteUser } from "@verdaccio/types"
 import { pluginUtils, errorUtils } from "@verdaccio/core"
 import { Application, static as expressServeStatic } from "express"
 import { WebFlow } from "../flows"
-import { AuthCore } from "./AuthCore"
 import { VerdaccioGoogleOAuthConfig, ParsedPluginConfig } from "./Config"
 import { PatchHtml } from "./PatchHtml"
 import { registerGlobalProxyAgent } from "./ProxyAgent"
 import { publicRoot, staticPath } from "../constants"
 import { Verdaccio } from "./Verdaccio"
+import { createAuthenticatedUser } from "../helpers"
 
-type Package = PackageAccess & (AllowAccess | VerdaccioGithubOauthConfig)
+type Package = PackageAccess & (AllowAccess | VerdaccioGoogleOAuthConfig)
 type Action = "access" | "publish" | "unpublish"
 
 function logAccess(
@@ -37,7 +37,6 @@ export class Plugin
 {
   private readonly parsedConfig = new ParsedPluginConfig(this.config)
   private readonly verdaccio = new Verdaccio(this.config)
-  private readonly core = new AuthCore()
 
   constructor(
     readonly config: VerdaccioGoogleOAuthConfig,
@@ -58,7 +57,7 @@ export class Plugin
 
     const children = [
       new PatchHtml(this.parsedConfig),
-      new WebFlow(this.verdaccio, this.parsedConfig, this.core),
+      new WebFlow(this.verdaccio, this.parsedConfig),
     ]
 
     for (const child of children) {
@@ -114,10 +113,10 @@ export class Plugin
    */
   async allow_access(
     user: RemoteUser,
-    pkg: PackageAccess & (AllowAccess | VerdaccioGoogleOAuthConfig),
+    pkg: Package,
     callback: pluginUtils.AuthAccessCallback,
   ): Promise<void> {
-    await this._allow(user, pkg.access, callback)
+    await this._allow(user, pkg, "access", callback)
   }
 
   /**
@@ -125,10 +124,10 @@ export class Plugin
    */
   async allow_publish(
     user: RemoteUser,
-    pkg: PackageAccess & (AllowAccess | VerdaccioGoogleOAuthConfig),
+    pkg: Package,
     callback: pluginUtils.AccessCallback,
   ): Promise<void> {
-    await this._allow(user, pkg.publish, callback)
+    await this._allow(user, pkg, "publish", callback)
   }
 
   /**
@@ -136,7 +135,7 @@ export class Plugin
    */
   async allow_unpublish(
     user: RemoteUser,
-    pkg: PackageAccess & (AllowAccess | VerdaccioGoogleOAuthConfig),
+    pkg: Package,
     callback: pluginUtils.AccessCallback,
   ): Promise<void> {
     if (pkg.unpublish === false) {
@@ -155,6 +154,6 @@ export class Plugin
       return
     }
 
-    await this._allow(user, pkg.unpublish, callback)
+    await this._allow(user, pkg, "unpublish", callback)
   }
 }

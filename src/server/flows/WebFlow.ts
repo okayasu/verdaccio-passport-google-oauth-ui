@@ -8,10 +8,13 @@ import passport from "passport"
 import { logger } from "../../logger"
 import { getAuthorizePath, getCallbackPath } from "../../redirect"
 import { buildErrorPage } from "../../statusPage"
-import { AuthCore } from "../plugin/AuthCore"
 import { ParsedPluginConfig } from "../plugin/Config"
 import { Verdaccio } from "../plugin/Verdaccio"
-import { getBaseUrl, IPluginMiddleware } from "../helpers"
+import {
+  createAuthenticatedUser,
+  getBaseUrl,
+  IPluginMiddleware,
+} from "../helpers"
 
 const COOKIE_OPTIONS = {
   sameSite: true,
@@ -22,16 +25,13 @@ const COOKIE_OPTIONS = {
 export class WebFlow implements IPluginMiddleware {
   private readonly verdaccio: Verdaccio
   private readonly config: ParsedPluginConfig
-  private readonly core: AuthCore
 
   constructor(
     verdaccio: Verdaccio,
     config: ParsedPluginConfig,
-    core: AuthCore,
   ) {
     this.verdaccio = verdaccio
     this.config = config
-    this.core = core
   }
 
   initialize(app: Application) {
@@ -118,7 +118,7 @@ export class WebFlow implements IPluginMiddleware {
           if (!user) {
             res.redirect("/")
           }
-          const userObj = await this.core.createAuthenticatedUser(user.email)
+          const userObj = createAuthenticatedUser(user.email)
           const uiToken = await this.verdaccio.issueUiToken(userObj)
           const npmToken = await this.verdaccio.issueNpmToken(userObj, info)
 
