@@ -9,6 +9,23 @@ import { registerGlobalProxyAgent } from "./ProxyAgent"
 import { publicRoot, staticPath } from "../constants"
 import { Verdaccio } from "./Verdaccio"
 
+type Package = PackageAccess & (AllowAccess | VerdaccioGithubOauthConfig)
+type Action = "access" | "publish" | "unpublish"
+
+function logAccess(
+  user: RemoteUser,
+  pkg: Package,
+  action: Action,
+  grant: boolean,
+) {
+  logger.debug({
+    package: pkg.name,
+    action: action,
+    user: user.name,
+    grant: grant,
+  })
+}
+
 /**
  * Implements the verdaccio plugin interfaces.
  */
@@ -69,22 +86,26 @@ export class Plugin
 
   private async _allow(
     user: RemoteUser,
-    pkgAccess: string[] | undefined,
+    pkg: Package,
+    action: Action,
     callback: pluginUtils.AccessCallback,
   ) {
     if (!user.name) {
       // let other auth plugins and verdaccio's default handler deal with unauthenticated users
+      logAccess(user, pkg, action, false)
       callback(null, false)
       return
     }
 
     /*
+    const requiredGroups = pkg[action] as string[] | undefined
     const userGroups = await this.cache.getGroups(user.name)
+    const grant = !!requiredGroups?.some((group) => userGroups.includes(group))
 
-    // pkg.access cannot be undefined here due to normalisePackageAccess() in @verdaccio/config
     const grant = pkgAccess?.some((group) => userGroups.includes(group))
     */
     const grant = true
+    logAccess(user, pkg, action, grant)
     callback(null, grant)
   }
 
